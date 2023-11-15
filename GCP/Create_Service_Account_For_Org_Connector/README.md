@@ -16,8 +16,8 @@ Follow these steps to use the Terraform script:
 
 1. Clone the Repository:
 ```bash
-git clone https://github.com/xxxxxxx/your-repo.git
-cd your-repo
+git clone https://github.com/Qualys/TotalCloud.git
+cd TotalCloud/GCP/Create_Service_Account_For_Org_Connector
 ```
 2. Configure Terraform:
 
