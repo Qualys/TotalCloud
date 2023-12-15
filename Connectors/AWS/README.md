@@ -25,9 +25,8 @@ cd Connectors/AWS
 QUALYS_USERNAME="your_username"
 QUALYS_PASSWORD="your_password"
 
-4. Configure the Qualys API endpoint in the script (if different from the default):
-Ref:- https://www.qualys.com/platform-identification/
-ex :- API_ENDPOINT="https://qualysapi.qg1.apps.qualys.ca/qps/rest/3.0/create/am/awsassetdataconnector"
+4. Configure the Qualys API endpoint in the script. Ref:- https://www.qualys.com/platform-identification/
+- ex :- API_ENDPOINT="https://qualysapi.qg1.apps.qualys.ca/qps/rest/3.0/create/am/awsassetdataconnector"
 
 6. Place your CSV file (connector_data.csv) in the same directory as the script.
 
