@@ -26,12 +26,12 @@ QUALYS_USERNAME="your_username"
 QUALYS_PASSWORD="your_password"
 
 4. Configure the Qualys API endpoint in the script (if different from the default):
+Ref:- https://www.qualys.com/platform-identification/
+ex :- API_ENDPOINT="https://qualysapi.qg1.apps.qualys.ca/qps/rest/3.0/create/am/awsassetdataconnector"
 
-API_ENDPOINT="https://qualysapi.qg1.apps.qualys.ca/qps/rest/3.0/create/am/awsassetdataconnector"
+6. Place your CSV file (connector_data.csv) in the same directory as the script.
 
-5. Place your CSV file (connector_data.csv) in the same directory as the script.
-
-6. Make the script executable:
+7. Make the script executable:
 ```bash
 chmod +x create_connectors.sh
 ```
@@ -41,8 +41,34 @@ chmod +x create_connectors.sh
 ````
 
 ## Configuration
-API_ENDPOINT: Qualys API endpoint for creating AWS Asset Data Connectors. You can configure this endpoint if your Qualys instance has a different API URL.
-DELAY_BETWEEN_REQUESTS: Delay (in seconds) between API requests to avoid rate limiting.
+- API_ENDPOINT: Qualys API endpoint for creating AWS Asset Data Connectors. You can configure this endpoint if your Qualys instance has a different API URL.
+- DELAY_BETWEEN_REQUESTS: Delay (in seconds) between API requests to avoid rate limiting.
+- To Create AV only Connector
+Update the body parameters from
+```bash
+            "ConnectorAppInfoQList": [
+              {"set": {"ConnectorAppInfo": {"name": "AI", "identifier": "$arn"}}},
+              {"set": {"ConnectorAppInfo": {"name": "CI", "identifier": "$arn"}}},
+              {"set": {"ConnectorAppInfo": {"name": "CSA", "identifier": "$arn"}}}
+              ]
+```
+to
+```bash
+"ConnectorAppInfoQList": [
+              {"set": {"ConnectorAppInfo": {"name": "AI", "identifier": "$arn"}}}
+              ]
+```
+- To Create a CSPM Connector do not make any changes to the body
+- To Disable Asset Activation remove the below block
+```bash
+        "activation": {
+          "set": {
+            "ActivationModule": ["VM", "PC"]
+          }
+        },
+```
+
+For more configuration refer :- https://www.qualys.com/docs/qualys-connectors-api-v3-user-guide.pdf
 
 ## Logging
 Logs are stored in the connector_creation.log file in the same directory as the script.
