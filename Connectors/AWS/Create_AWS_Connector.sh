@@ -5,7 +5,7 @@ API_ENDPOINT="<Qualys_API_Server_URL>/qps/rest/3.0/create/am/awsassetdataconnect
 
 # Qualys API credentials
 QUALYS_USERNAME="************"
-QUALYS_PASSWORD="="************""
+QUALYS_PASSWORD="************"
 
 # CSV file containing data for connectors
 CSV_FILE_PATH="connector_data.csv"
