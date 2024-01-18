@@ -1,6 +1,6 @@
-# AWS Asset Data Connector Creation Script
+# AWS Account Level Connector Creation Script
 
-This script automates the creation of AWS Asset Data Connectors using the Qualys API. It reads connector data from a CSV file and sends requests to the Qualys API to create connectors accordingly.
+This script automates the creation of Account Level Connector Connectors using the Qualys API. It reads connector data from a CSV file and sends requests to the Qualys API to create connectors accordingly.
 
 ## Prerequisites
 
@@ -32,7 +32,7 @@ QUALYS_PASSWORD="your_password"
 
 7. Make the script executable:
 ```bash
-chmod +x create_connectors.sh
+chmod +x Create_AWS_Connector.sh
 ```
 7. Run the script:
 ```bash
@@ -75,4 +75,7 @@ Logs are stored in the connector_creation.log file in the same directory as the 
 ## Notes
 The script skips the header row in the CSV file.
 Adjust the DELAY_BETWEEN_REQUESTS variable to control the delay between API requests.
+
+## Author
+Yash Jhunjhunwala (Senior Solutions Architect, Cloud Security)
 
