@@ -1,6 +1,6 @@
 # AWS Account Level Connector Creation Script
 
-This script automates the creation of Account Level Connector Connectors using the Qualys API. It reads connector data from a CSV file and sends requests to the Qualys API to create connectors accordingly.
+This script automates the creation of Account Level Connector Connectors using the Qualys API in bulk. It reads connector data from a CSV file and sends requests to the Qualys API to create connectors accordingly.
 
 ## Prerequisites
 
