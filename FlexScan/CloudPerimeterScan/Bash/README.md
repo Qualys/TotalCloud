@@ -1,9 +1,6 @@
-Here is a README file for the provided Bash script:
+# On Demand Cloud Perimeter Scan for CSPM Connectors
 
-
-# Connector Scan Script
-
-This script automates the process of scanning connectors for different cloud providers using the Qualys API. It supports Google Cloud Platform (GCP), Amazon Web Services (AWS), and Microsoft Azure.
+This script automates the process of carrying out an perimeter scans on the public facing assets discovered via connectors for different cloud providers using the Qualys API. It supports Google Cloud Platform (GCP), Amazon Web Services (AWS), and Microsoft Azure.
 
 ## Prerequisites
 
@@ -25,18 +22,15 @@ Set Qualys API Credentials
 
 Replace the placeholder <> in the AUTH_HEADER variable with your base64-encoded Qualys API credentials.
 
-
 AUTH_HEADER="Authorization: Basic <base64_encoded_credentials>"
 
-Script Usage:
+## Script Usage:
 
    Run the Script
 
-      Execute the script using the following command:
+      Execute the script using the following command: ./launch_cloud_perimeter_scan_for_cspm_connector.sh.sh
 
-
-      ./connector_scan.sh
-Select Cloud Provider:
+- Select Cloud Provider:
 
    When prompted, select the cloud provider you want to scan connectors for:
 
@@ -44,46 +38,49 @@ Select Cloud Provider:
       2 for AWS
       3 for Azure
 
-View Logs:
+## View Logs:
 
    The script logs its operations to connector_scan_log.txt. Check this file for details about the execution.
 
-Scan History
+## Scan History
 
    The script maintains a scan history in scan_history.txt. This file keeps track of previously scanned connectors to avoid redundant scans.
 
-Script Workflow:
+## Script Workflow:
 
-   Initialize Log File
+   - Initialize Log File
 
       The script starts by initializing a log file with the current date and time.
 
-   Fetch Connectors
+   - Fetch Connectors
 
       It fetches the list of connectors for the selected cloud provider using pagination.
 
-   Check Scan History
+   - Check Scan History
 
       For each connector, the script checks if it has already been scanned by referring to scan_history.txt.
 
-   Launch Perimeter Scan
+   - Launch Perimeter Scan
 
       If a connector has not been scanned, the script launches a perimeter scan using the Qualys API. If the connector has been scanned, it reactivates the scan schedule.
 
-   Log Scan Results
+   - Log Scan Results
 
       The results of each scan are logged, and the scan details are appended to scan_history.txt.
 
-Files
-   connector_scan.sh: The main script file.
-   connector_scan_log.txt: Log file for script operations.
-   scan_history.txt: History file for tracking scanned connectors.
+## Files
+   - launch_cloud_perimeter_scan_for_cspm_connector.sh: The main script file.
+   - connector_scan_log.txt: Log file for script operations.
+   - scan_history.txt: History file for tracking scanned connectors.
 
 
-Notes
+## Notes
    Ensure that the Qualys API URL is correctly set in the QUALYS_API_URL variable.
    The script assumes a valid API response structure. Modify the parsing logic if the API response format changes.
    Handle API rate limits and errors appropriately in a production environment.
 
-License
+## License
 This script is licensed under the MIT License. See the LICENSE file for more details.
+
+## Author
+Yash Jhunjhunwala (Lead SME, Cloud Security)
