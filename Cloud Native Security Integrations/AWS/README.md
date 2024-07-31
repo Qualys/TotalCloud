@@ -1,6 +1,6 @@
 # Cloud-Native Integrations with AWS Services
 
-This repository contains Terraform configurations to integrate multiple AWS services like GuardDuty and Macie with Qualys. The provided Terraform files set up roles, policies, API destinations, EventBridge rules, and CloudFormation StackSets to facilitate these integrations.
+This repository contains Terraform configurations to integrate the GuardDuty AWS services with Qualys TotalCloud Application. The provided Terraform files set up roles, policies, API destinations, EventBridge rules, and CloudFormation StackSets to facilitate these integrations.
 
 ## Table of Contents
 
