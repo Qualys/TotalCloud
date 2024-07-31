@@ -1,0 +1,303 @@
+Resources:
+  RoleForAPIDestination:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: events.amazonaws.com
+        Version: "2012-10-17"
+      Description: Role to provide access to API Destination
+      RoleName: qualys-findings-event-bridge-role
+      Tags:
+        - Key: App
+          Value: qualys-findings-aws
+  PolicyAPIBased:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - events:InvokeApiDestination
+              - events:PutEvents
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: qualys-findings-event-bridge-policy
+      Roles:
+        - Ref: RoleForAPIDestination
+  StackSetAdministrationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: cloudformation.amazonaws.com
+        Version: "2012-10-17"
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - Action: sts:AssumeRole
+                Effect: Allow
+                Resource:
+                  Fn::Join:
+                    - ""
+                    - - "arn:aws:iam::"
+                      - Ref: AWS::AccountId
+                      - :role/qualys-findings-stack-execution-role
+            Version: "2012-10-17"
+          PolicyName: assumeExecutionRolePolicy
+      RoleName: qualys-findings-stack-administration-role
+      Tags:
+        - Key: App
+          Value: qualys-findings-aws
+  StackSetExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::GetAtt:
+                  - StackSetAdministrationRole
+                  - Arn
+        Version: "2012-10-17"
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - Action:
+                  - cloudformation:*
+                  - events:*
+                  - secretsmanager:*
+                Effect: Allow
+                Resource: "*"
+              - Action: iam:PassRole
+                Effect: Allow
+                Resource:
+                  Fn::GetAtt:
+                    - RoleForAPIDestination
+                    - Arn
+            Version: "2012-10-17"
+          PolicyName: stackExecutionPolicy
+      RoleName: qualys-findings-stack-execution-role
+      Tags:
+        - Key: App
+          Value: qualys-findings-aws
+  APIConnection:
+    Type: AWS::Events::Connection
+    Properties:
+      AuthParameters:
+        ApiKeyAuthParameters:
+          ApiKeyName: X-API-KEY
+          ApiKeyValue: QFLOW-SSM-EVALUATION
+        InvocationHttpParameters:
+          HeaderParameters:
+            - IsValueSecret: false
+              Key: Authorization
+              Value:
+                Fn::Join:
+                  - " "
+                  - - Bearer
+                    - Ref: SubscriptionToken
+      AuthorizationType: API_KEY
+      Description: Connection for AWS Findings to Qualys
+      Name: qualys-findings-api-connection
+  APIDestinationApiDestinationGuardduty:
+    Type: AWS::Events::ApiDestination
+    Properties:
+      ConnectionArn:
+        Fn::GetAtt:
+          - APIConnection
+          - Arn
+      Description: API Destination for AWS Guardduty Findings
+      HttpMethod: POST
+      InvocationEndpoint: !Join [ "/", [ !Ref APIGatewayURL, cdr, v2, aws, guardduty, events, create ] ]
+      InvocationRateLimitPerSecond: 300
+      Name: qualys-findings-api-destination-guardduty
+  EventRuleGuardDuty:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: EventBridge rule which gets triggered by GuardDuty and sends event to qualys
+      EventBusName: default
+      EventPattern:
+        source:
+          - aws.guardduty
+        detail-type:
+          - GuardDuty Finding
+      Name: qualys-findings-guardduty-event-rule
+      State: ENABLED
+      Targets:
+        - Arn:
+            Fn::GetAtt:
+              - APIDestinationApiDestinationGuardduty
+              - Arn
+          Id: Target0
+          RoleArn:
+            Fn::Join:
+              - ":"
+              - - "arn:aws:iam:"
+                - Ref: AWS::AccountId
+                - role/qualys-findings-event-bridge-role
+  RegionStackSet:
+    Type: AWS::CloudFormation::StackSet
+    Properties:
+      AdministrationRoleARN:
+        Fn::GetAtt:
+          - StackSetAdministrationRole
+          - Arn
+      Description: deploys event bridge across multiple regions
+      ExecutionRoleName:
+        Ref: StackSetExecutionRole
+      OperationPreferences:
+        RegionConcurrencyType: PARALLEL
+      Parameters:
+        - ParameterKey: MainEventBridgeRegion
+          ParameterValue:
+            Ref: AWS::Region
+      PermissionModel: SELF_MANAGED
+      StackInstancesGroup:
+        - DeploymentTargets:
+            Accounts:
+              - Ref: AWS::AccountId
+          Regions:
+            Ref: Regions
+      StackSetName: qualys-findings-cross-region
+      Tags:
+        - Key: App
+          Value: qualys-findings-aws
+      TemplateBody: |+
+        {
+          "Parameters": {
+            "MainEventBridgeRegion": {
+              "Type": "String"
+            }
+          },
+          "Conditions": {
+            "NotRegionCondition": {
+              "Fn::Not": [
+                {
+                  "Fn::Equals": [
+                    {
+                      "Ref": "AWS::Region"
+                    },
+                    {
+                      "Ref": "MainEventBridgeRegion"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "Resources": {
+            "CrossRegionEventRuleGuardduty": {
+              "Condition": "NotRegionCondition",
+              "Type": "AWS::Events::Rule",
+              "Properties": {
+                "Description": "EventBridge rule which gets triggered by GuardDuty and sends event to qualys",
+                "EventBusName": "default",
+                "EventPattern": {
+                  "source": [
+                    "aws.guardduty"
+                  ],
+                  "detail-type": [
+                    "GuardDuty Finding"
+                  ]
+                },
+                "Name": "qualys-findings-guardduty-event-rule",
+                "State": "ENABLED",
+                "Targets": [
+                  {
+                    "Arn": {
+                      "Fn::Join": [
+                        "",
+                        [
+                          "arn:aws:events:",
+                          {
+                            "Ref": "MainEventBridgeRegion"
+                          },
+                          ":",
+                          {
+                            "Ref": "AWS::AccountId"
+                          },
+                          ":event-bus/default"
+                        ]
+                      ]
+                    },
+                    "Id": "Target0",
+                    "RoleArn": {
+                      "Fn::Join": [
+                        ":",
+                        [
+                          "arn:aws:iam:",
+                          {
+                            "Ref": "AWS::AccountId"
+                          },
+                          "role/qualys-findings-event-bridge-role"
+                        ]
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+
+    DependsOn:
+      - RoleForAPIDestination
+Parameters:
+  SubscriptionToken:
+    Type: String
+    Default: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxdWF5c192czIiLCJpc3MiOiJxYXMiLCJwb3J0YWxVc2VySWQiOjQwODYwNSwic2VjcmV0SWQiOiI4OTRhOTdlZC03ZDBjLTRkZGYtOGY1ZC01MzNjY2RkN2JhYjAiLCJxd2ViVXNlcklkIjoxNjcwNDYsImF1ZCI6InFhcyIsImN1c3RvbWVySWQiOjE5NjYyNywic3Vic2NyaXB0aW9uVXVpZCI6Ijg5OWIzY2I2LWRhZTAtYzBiZi04MWU2LTg5ODFjNWYxNmI2NCIsImV4cCI6MTczNTY4OTU5OSwic3Vic2NyaXB0aW9uSWQiOjE1NjA1OSwidG9rZW5UeXBlIjoic3Vic2NyaXB0aW9uIiwiaWF0IjoxNzA5MTIxMzMyLCJqdGkiOiI5MzNiMGFjMy04YWRlLTQxNGMtYWFlMi01ZjljODU3M2FjYmQifQ.V-sQlfjPp69YsMVEXQ6X-6ZemDThnK742pcP1OA78_h_OipvEoyv59SDrJQZpauHj6_7HgWpfMtVBUca2ie7ng
+    AllowedPattern: ^[\w\-]{1,64}\.[\w\-]{1,1024}\.[\w\-]{20,100}$
+    ConstraintDescription: Token should match the given constraint.
+    Description: Follow the steps mentioned in UserGuide to generate SubscriptionToken :- https://docs.qualys.com/en/conn/latest/#t=scans%2Fsnapshot-based_scan.htm
+    MinLength: 1
+    NoEcho: true
+  APIGatewayURL:
+    Type: String
+    Default: https://gateway.eng.totalcloud.io/p19
+    AllowedPattern: ^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$
+    ConstraintDescription: It should be a valid URL.
+    Description: Qualys API Gateway URL. Find the Gateway URL at https://www.qualys.com/platform-identification/
+    MinLength: 1
+  Regions:
+    Type: List<String>
+    Default: us-east-1
+    AllowedValues:
+      - us-east-2
+      - us-east-1
+      - us-west-1
+      - us-west-2
+      - af-south-1
+      - ap-east-1
+      - ap-south-2
+      - ap-southeast-3
+      - ap-southeast-4
+      - ap-south-1
+      - ap-northeast-3
+      - ap-northeast-2
+      - ap-southeast-1
+      - ap-southeast-2
+      - ap-northeast-1
+      - ca-central-1
+      - ca-west-1
+      - eu-central-1
+      - eu-west-1
+      - eu-west-2
+      - eu-south-1
+      - eu-west-3
+      - eu-south-2
+      - eu-north-1
+      - eu-central-2
+      - il-central-1
+      - me-south-1
+      - me-central-1
+      - sa-east-1
+    Description: Enter the EventBridge Deployment Region
