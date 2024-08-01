@@ -12,7 +12,7 @@ with open('config.json', 'r') as config_file:
 # Extract values from config
 username = config['username']
 password = config['password']
-QUALYS_API_URL = config['QUALYS_API_URL']
+QUALYS_Platform_URL = config['QUALYS_Platform_URL']
 
 # Create the authorization header
 auth_string = f"{username}:{password}"
@@ -59,7 +59,7 @@ def fetch_connectors(api_endpoint, pageNo, pageSize):
 
 # Set the API endpoint, scan title prefix, and cloud_service for GCP
 cloud_provider = "GCP"
-CONNECTORS_API_ENDPOINT = f"{QUALYS_API_URL}/cloudview-api/rest/v1/gcp/connectors"
+CONNECTORS_API_ENDPOINT = f"{QUALYS_Platform_URL}/cloudview-api/rest/v1/gcp/connectors"
 cloud_service = "compute_engine"
 
 # Fetch all connectors with pagination
@@ -137,7 +137,7 @@ for connector in tqdm(all_connectors, desc="Processing connectors"):
         # Activate the schedule for the existing scan
         try:
             activate_response = requests.post(
-                f"{QUALYS_API_URL}/api/2.0/fo/schedule/scan/",
+                f"{QUALYS_Platform_URL}/api/2.0/fo/schedule/scan/",
                 headers={
                     "X-Requested-With": "Curl",
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -163,7 +163,7 @@ for connector in tqdm(all_connectors, desc="Processing connectors"):
     # Launch perimeter scan
     try:
         scan_response = requests.post(
-            f"{QUALYS_API_URL}/api/2.0/fo/scan/cloud/perimeter/job/",
+            f"{QUALYS_Platform_URL}/api/2.0/fo/scan/cloud/perimeter/job/",
             headers={
                 "X-Requested-With": "curl",
                 "Authorization": AUTH_HEADER
