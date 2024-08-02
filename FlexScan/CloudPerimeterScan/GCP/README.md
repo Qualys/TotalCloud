@@ -44,7 +44,7 @@ This script automates the process of fetching Qualys CloudView connectors and la
     {
         "username": "your_username",
         "password": "your_password",
-        "QUALYS_API_URL": "https://qualysguard.qg1.apps.qualys.ca"
+        "QUALYS_Platform_URL": "https://qualysguard.qg1.apps.qualys.ca"
     }
     ```
 
