@@ -1,13 +1,13 @@
 variable "application_display_name" {
   description = "The display name of the Azure AD application"
   type        = string
-  default     = "example-app"
+  default     = "qualys-cspm-read-only"
 }
 
 variable "secret_key_expiry" {
   description = "The expiry duration for the application secret key"
   type        = string
-  default     = "240h"
+  default     = "8766h"
 }
 
 variable "secret_key_filename" {
