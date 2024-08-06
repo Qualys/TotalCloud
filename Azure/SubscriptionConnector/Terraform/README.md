@@ -19,15 +19,23 @@ This Terraform configuration sets up an Azure AD Application, creates a Service 
 1. **Clone the Repository**
 
     ```bash
-    git clone https://github.com/your-username/your-repository.git
-    cd your-repository
+    git clone https://github.com/Qualys/TotalCloud.git
+    cd TotalCloud/Azure/SubscriptionConnector/Terraform/
     ```
 
 2. **Configure Your Azure Provider**
 
    Ensure you are authenticated with Azure CLI or provide credentials in your `~/.azure/credentials` file.
 
-3. **Initialize Terraform**
+3. **Create a `terraform.tfvars` File**
+
+   Create a `terraform.tfvars` file in the root directory to specify your variables:
+
+    ```hcl
+    subscription_id = "your-subscription-id"
+    ```
+
+4. **Initialize Terraform**
 
     Initialize the Terraform configuration. This will download the required providers.
 
@@ -35,7 +43,7 @@ This Terraform configuration sets up an Azure AD Application, creates a Service 
     terraform init
     ```
 
-4. **Review the Plan**
+5. **Review the Plan**
 
     Generate and review an execution plan to ensure the changes meet your expectations.
 
@@ -43,7 +51,7 @@ This Terraform configuration sets up an Azure AD Application, creates a Service 
     terraform plan
     ```
 
-5. **Apply the Configuration**
+6. **Apply the Configuration**
 
     Apply the configuration to create the resources.
 
@@ -68,7 +76,7 @@ After running `terraform apply`, the following outputs will be displayed:
 
 ## Best Practices
 
-- **Variables**: Configurable values are defined in `variables.tf` for easy management.
+- **Variables**: Configurable values, including the subscription ID, are defined in `variables.tf` for easy management.
 - **Code Organization**: Terraform configuration is split into `main.tf`, `variables.tf`, and `outputs.tf` for clarity.
 - **Sensitive Data**: Ensure sensitive data is managed securely, even though Terraform cannot mark file contents as sensitive.
 
@@ -77,11 +85,5 @@ After running `terraform apply`, the following outputs will be displayed:
 - **Deprecation Warnings**: Update deprecated attributes according to the latest provider documentation.
 - **Unsupported Arguments**: Verify the supported arguments for resources in the provider documentation.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributing
-
-Feel free to open issues and pull requests for improvements and bug fixes. Contributions are welcome!
-
+## Author
+Yash Jhunjhunwala (Lead SME, Cloud Security)
