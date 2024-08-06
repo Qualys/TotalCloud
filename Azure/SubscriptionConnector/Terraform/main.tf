@@ -22,7 +22,10 @@ provider "azurerm" {
 provider "azuread" {}
 
 # Data sources to fetch current subscription and tenant details
-data "azurerm_subscription" "primary" {}
+data "azurerm_subscription" "primary" {
+  # Fetch subscription details using the provided subscription_id
+  subscription_id = var.subscription_id
+}
 
 data "azurerm_client_config" "qualys_client" {}
 
