@@ -15,3 +15,7 @@ variable "secret_key_filename" {
   type        = string
   default     = "secret_key.txt"
 }
+variable "subscription_id" {
+  description = "The Azure subscription ID where the resources will be created"
+  type        = string
+}
