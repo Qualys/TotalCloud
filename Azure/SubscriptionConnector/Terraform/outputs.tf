@@ -3,11 +3,11 @@ output "subscription_id" {
 }
 
 output "tenant_id" {
-  value = data.azurerm_client_config.example.tenant_id
+  value = data.azurerm_client_config.qualys_client.tenant_id
 }
 
 output "app_id" {
-  value = azuread_application.example.client_id
+  value = azuread_application.qualys_application.client_id
 }
 
 output "secret_key_file" {
