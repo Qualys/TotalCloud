@@ -1,7 +1,6 @@
 variable "project_id" {
   description = "Your GCP project ID"
   type        = string
-  default     = "%s"
 }
 
 variable "service_account_id" {
