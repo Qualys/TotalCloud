@@ -31,7 +31,7 @@ resource "oci_identity_policy" "audit_policy" {
   compartment_id = var.tenancy_id
 
   statements = [
-    "Allow group ${oci_identity_group.audit_group.name} to manage all-resources in tenancy"
+    "Allow group ${oci_identity_group.audit_group.name} to read all-resources in tenancy"
   ]
 }
 
