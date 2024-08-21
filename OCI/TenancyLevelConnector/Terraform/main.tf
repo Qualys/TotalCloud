@@ -1,5 +1,3 @@
-# main.tf
-
 resource "tls_private_key" "audit_user_key" {
   algorithm = "RSA"
   rsa_bits  = 2048
