@@ -62,3 +62,6 @@ To remove the resources created by this Terraform configuration, run:
 ## Notes
 - `Security`: Ensure that the private key file (oci_api_key.pem) is handled securely and not committed to version control.
 - `Permissions`: The user running Terraform needs sufficient permissions to create IAM users, groups, policies, and API keys in the OCI tenancy.
+
+## Author
+Yash Jhunjhunwala (Lead SME, Cloud Security)
