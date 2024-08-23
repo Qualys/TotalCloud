@@ -27,7 +27,7 @@ This repository contains Terraform configuration files to create an IAM user, IA
 - Edit the terraform.tfvars file with your OCI details:
    ```bash
    home_region     = "us-ashburn-1"  # Update with your OCI region
-   tenancy_id       = "ocid1.tenancy.oc1..aaaaaaaax2gwhq3hasgdahkdasdgasdar6kxn7itgkasdwhk7keokamq"  # Update with your Tenancy OCID
+   tenancy_id       = "ocid1.tenancy.oc1..aaaaaaaax2gwhq3hasgdahkdasdgasdar6kx......"  # Update with your Tenancy OCID
 
 3. **Initialize Terraform** :
 - Initialize your Terraform workspace to download the required providers:
