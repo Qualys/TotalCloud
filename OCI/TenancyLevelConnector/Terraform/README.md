@@ -18,7 +18,7 @@ This repository contains Terraform configuration files to create an IAM user, IA
 
 ## Configuration
 
-1. **Clone the Repository**
+1. **Clone the Repository** :
    ```bash
    git clone https://github.com/Qualys/TotalCloud.git
    cd OCI/TenancyLevelConnector/Terraform/
