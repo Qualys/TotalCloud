@@ -18,25 +18,17 @@ This Terraform configuration sets up an Azure AD Application, creates a Service 
 
 This solution can be deployed from Azure Cloudshell or Azure CLI
 
-1. **Download Terraform connector zip file totalcloud_azure.zip
+1. **Download Terraform connector zip file totalcloud_azure.zip**
 
     - (Optional)If use Azure Cloudshell to deploy the solution, upload the zip file to Azure Cloudshell
     - unzip totalcloud_azure.zip
     - cd totalcloud_azure
 
-2. **Configure Your Azure Provider**(For deploy from Azure CLI)
+2. **Configure Your Azure Provider(For deploy from Azure CLI)**
 
    Ensure you are authenticated with Azure CLI or provide credentials in your `~/.azure/credentials` file.
 
-3. **Create a `terraform.tfvars` File**
-
-   Create a `terraform.tfvars` file in the root directory to specify your variables:
-
-    ```hcl
-    subscription_id = "your-subscription-id"
-    ```
-
-4. **Initialize Terraform**
+3. **Initialize Terraform**
 
     Initialize the Terraform configuration. This will download the required providers.
 
@@ -44,7 +36,7 @@ This solution can be deployed from Azure Cloudshell or Azure CLI
     terraform init
     ```
 
-5. **Review the Plan**
+4. **Review the Plan**
 
     Generate and review an execution plan to ensure the changes meet your expectations.
 
@@ -52,7 +44,7 @@ This solution can be deployed from Azure Cloudshell or Azure CLI
     terraform plan
     ```
 
-6. **Apply the Configuration**
+5. **Apply the Configuration**
 
     Apply the configuration to create the resources.
 
