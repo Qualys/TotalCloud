@@ -18,7 +18,7 @@ This repository contains Terraform configuration files to create an IAM user, IA
 
 ## Configuration
 
-1. **Clone the Repository**
+1. **Clone the Repository** :
    ```bash
    git clone https://github.com/Qualys/TotalCloud.git
    cd OCI/TenancyLevelConnector/Terraform/
@@ -27,7 +27,7 @@ This repository contains Terraform configuration files to create an IAM user, IA
 - Edit the terraform.tfvars file with your OCI details:
    ```bash
    home_region     = "us-ashburn-1"  # Update with your OCI region
-   tenancy_id       = "ocid1.tenancy.oc1..aaaaaaaax2gwhq3hasgdahkdasdgasdar6kxn7itgkasdwhk7keokamq"  # Update with your Tenancy OCID
+   tenancy_id       = "ocid1.tenancy.oc1..aaaaaaaax2gwhq3hasgdahkdasdgasdar6kx......"  # Update with your Tenancy OCID
 
 3. **Initialize Terraform** :
 - Initialize your Terraform workspace to download the required providers:
@@ -62,6 +62,3 @@ To remove the resources created by this Terraform configuration, run:
 ## Notes
 - `Security`: Ensure that the private key file (oci_api_key.pem) is handled securely and not committed to version control.
 - `Permissions`: The user running Terraform needs sufficient permissions to create IAM users, groups, policies, and API keys in the OCI tenancy.
-
-## Author
-Yash Jhunjhunwala (Lead SME, Cloud Security)
