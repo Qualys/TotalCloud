@@ -125,7 +125,6 @@ resource "google_project_service" "dataproc" {
 }
 
 data "google_service_account" "QualysCSPMServiceAccountData" {
-  #count = var.CreateQualysCSPMServiceAccount == false? 1 : 0
   project    = var.project_id
   account_id = var.service_account_id
 }
