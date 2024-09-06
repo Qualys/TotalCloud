@@ -4,7 +4,7 @@ output "api_keys_json" {
 }
 
 output "service_account_email" {
-  value = google_service_account.QualysCSPMServiceAccount.email
+  value = var.CreateQualysCSPMServiceAccount == true ? google_service_account.QualysCSPMServiceAccount[0].email : data.google_service_account.QualysCSPMServiceAccountData.email
 }
 
 output "project_id" {
