@@ -1,12 +1,25 @@
-#Read project IDs from a text file
+provider "google" {
+  region = "us-central1"  # Adjust as needed
+}
+
 variable "project_ids_file" {
   default = "project_ids.txt"
 }
 
 locals {
-  project_ids = split("\n", file(var.project_ids_file))
+  raw_project_ids = split("\n", file(var.project_ids_file))
+  project_ids     = toset(compact([for id in local.raw_project_ids : trimspace(id)]))
 }
 
+# Enable Service Usage API
+resource "google_project_service" "service_usage" {
+  for_each = { for idx, project_id in local.project_ids : idx => project_id }
+  project = each.value
+  service = "serviceusage.googleapis.com"
+  lifecycle {
+        prevent_destroy = true
+    }
+}
 
 # Enable Compute Engine API
 resource "google_project_service" "compute_engine" {
@@ -128,15 +141,6 @@ resource "google_project_service" "pubsub" {
     }
 }
 
-# Enable Service Usage API
-resource "google_project_service" "service_usage" {
-  for_each = { for idx, project_id in local.project_ids : idx => project_id }
-  project = each.value
-  service = "serviceusage.googleapis.com"
-  lifecycle {
-        prevent_destroy = true
-    }
-}
 
 # Enable Cloud Dataproc API
 resource "google_project_service" "dataproc" {
