@@ -1,85 +1,62 @@
-# Cloud-Native Integrations with AWS Services
+# Qualys TotalCloud Integration with AWS GuardDuty
 
-This repository contains Terraform configurations to integrate the GuardDuty AWS services with Qualys TotalCloud Application. The provided Terraform files set up roles, policies, API destinations, EventBridge rules, and CloudFormation StackSets to facilitate these integrations.
+## Overview
+This AWS CloudFormation template deploys an EventBridge-based integration for **Qualys TotalCloud Integration with AWS GuardDuty**. The deployment includes IAM roles, policies, API Destinations, and EventBridge rules to automate the forwarding of AWS GuardDuty findings to Qualys TotalCloud.
 
-## Table of Contents
+## Features
+- 🚀 **IAM Roles and Policies**: Grants necessary permissions to invoke API destinations and manage event rules.
+- 🔄 **EventBridge Rules**: Triggers assessments when GuardDuty detects findings.
+- 🌍 **Cross-Region Deployment**: Uses AWS StackSets to deploy the EventBridge rule across multiple regions.
+- 🔐 **API Destinations**: Securely connects to Qualys TotalCloud API for findings forwarding.
 
-- [Usage](#usage)
-- [Resources](#resources)
-  - [RoleForAPIDestination](#roleforapidestination)
-  - [PolicyAPIBased](#policyapibased)
-  - [StackSetAdministrationRole](#stacksetadministrationrole)
-  - [StackSetExecutionRole](#stacksetexecutionrole)
-  - [APIConnection](#apiconnection)
-  - [APIDestinationApiDestinationGuardduty](#apidestinationapidestinationguardduty)
-  - [EventRuleGuardDuty](#eventruleguardduty)
-  - [RegionStackSet](#regionstackset)
-- [Parameters](#parameters)
+## 📌 Resources Deployed
 
-## Usage
+### **IAM Roles & Policies**
+- **`RoleForAPIDestination`** - IAM Role to provide access to API Destination.
+- **`PolicyAPIBased`** - IAM Policy allowing invocation of API Destinations.
+- **`StackSetAdministrationRole`** - IAM Role for CloudFormation StackSet administration.
+- **`StackSetExecutionRole`** - IAM Role with permissions for cross-region stack execution.
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/Qualys/TotalCloud.git
-    cd Cloud Native Security Integrations/AWS/
-    ```
+### **EventBridge Configuration**
+- **`APIConnection`** - Configures authentication for the API Destination.
+- **`APIDestinationApiDestinationGuardduty`** - Defines the API Destination for Qualys TotalCloud GuardDuty integration.
+- **`EventRuleGuardDuty`** - Listens for AWS GuardDuty findings and triggers Qualys TotalCloud processing.
+- **`RegionStackSet`** - Deploys EventBridge rules across multiple AWS regions.
 
-2. Initialize Terraform:
-    ```bash
-    terraform init
-    ```
+## ⚙️ Parameters
+| Parameter | Description |
+|-----------|-------------|
+| **`SubscriptionToken`** | Token required for authentication with Qualys TotalCloud API. |
+| **`APIGatewayURL`** | Qualys TotalCloud API Gateway URL. |
+| **`Regions`** | List of AWS regions where EventBridge rules will be deployed. |
 
-3. Review the `variables.tf` file to ensure that all necessary variables are correctly set.
+## 🚀 Deployment Instructions
+### **Using the AWS Management Console**
+1. Navigate to the **AWS CloudFormation Console**.
+2. Click on **Create Stack** → **With new resources**.
+3. Upload the **CloudFormation template**.
+4. Provide the required **parameters**.
+5. Click **Next** and configure stack options if needed.
+6. Click **Create Stack** and wait for deployment to complete.
 
-4. Apply the Terraform configuration:
-    ```bash
-    terraform apply
-    ```
+### **Using AWS CLI**
+Run the following command:
+```sh
+aws cloudformation deploy --template-file template.yml --stack-name qualys-findings-stack --capabilities CAPABILITY_NAMED_IAM
+```
 
-5. Follow any additional setup instructions displayed after the Terraform run completes.
+### **Using AWS CDK**
+If using **AWS CDK**, deploy using:
+```sh
+cdk deploy
+```
 
-## Resources
+## 🤝 Contributors
+- **Yash Jhunjhunwala (Lead SME, Cloud Secuirty)** - Initial implementation
 
-### RoleForAPIDestination
+## 📖 Additional Information
+Refer to the [Qualys Documentation](https://docs.qualys.com/en/conn/latest/#t=scans%2Fsnapshot-based_scan.htm) for generating the **SubscriptionToken** and other necessary setup details.
 
-This IAM role allows EventBridge to assume and access API destinations.
-
-### PolicyAPIBased
-
-This IAM policy allows EventBridge to invoke API destinations and put events.
-
-### StackSetAdministrationRole
-
-This IAM role is used for administrating CloudFormation StackSets.
-
-### StackSetExecutionRole
-
-This IAM role is used for executing CloudFormation StackSets.
-
-### APIConnection
-
-This resource defines a connection for AWS Findings to Qualys.
-
-### APIDestinationApiDestinationGuardduty
-
-This resource sets up an API destination for AWS GuardDuty Findings.
-
-### EventRuleGuardDuty
-
-This EventBridge rule triggers on GuardDuty findings and sends events to Qualys.
-
-### RegionStackSet
-
-This CloudFormation StackSet deploys EventBridge across multiple regions.
-
-## Parameters
-
-- `SubscriptionToken` - The subscription token for Qualys. Follow the steps mentioned in [UserGuide](https://docs.qualys.com/en/conn/latest/#t=scans%2Fsnapshot-based_scan.htm) to generate this token.
-- `APIGatewayURL` - The Qualys API Gateway URL. Find the Gateway URL at [Qualys Platform Identification](https://www.qualys.com/platform-identification/).
-- `Regions` - List of AWS regions for deploying EventBridge. Default is `us-east-1`.
-
-For detailed information on each resource, please refer to the AWS CloudFormation documentation and the Terraform AWS provider documentation.
-
-## Author
-Yash Jhunjhunwala (Lead SME, Cloud Security)
+---
+*Happy Deploying! 🚀*
 
