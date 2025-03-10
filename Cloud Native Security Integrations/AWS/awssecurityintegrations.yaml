@@ -254,7 +254,7 @@ Resources:
 Parameters:
   SubscriptionToken:
     Type: String
-    Default: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJxdWF5c192czIiLCJpc3MiOiJxYXMiLCJwb3J0YWxVc2VySWQiOjQwODYwNSwic2VjcmV0SWQiOiI4OTRhOTdlZC03ZDBjLTRkZGYtOGY1ZC01MzNjY2RkN2JhYjAiLCJxd2ViVXNlcklkIjoxNjcwNDYsImF1ZCI6InFhcyIsImN1c3RvbWVySWQiOjE5NjYyNywic3Vic2NyaXB0aW9uVXVpZCI6Ijg5OWIzY2I2LWRhZTAtYzBiZi04MWU2LTg5ODFjNWYxNmI2NCIsImV4cCI6MTczNTY4OTU5OSwic3Vic2NyaXB0aW9uSWQiOjE1NjA1OSwidG9rZW5UeXBlIjoic3Vic2NyaXB0aW9uIiwiaWF0IjoxNzA5MTIxMzMyLCJqdGkiOiI5MzNiMGFjMy04YWRlLTQxNGMtYWFlMi01ZjljODU3M2FjYmQifQ.V-sQlfjPp69YsMVEXQ6X-6ZemDThnK742pcP1OA78_h_OipvEoyv59SDrJQZpauHj6_7HgWpfMtVBUca2ie7ng
+    Default:
     AllowedPattern: ^[\w\-]{1,64}\.[\w\-]{1,1024}\.[\w\-]{20,100}$
     ConstraintDescription: Token should match the given constraint.
     Description: Follow the steps mentioned in UserGuide to generate SubscriptionToken :- https://docs.qualys.com/en/conn/latest/#t=scans%2Fsnapshot-based_scan.htm
@@ -262,7 +262,7 @@ Parameters:
     NoEcho: true
   APIGatewayURL:
     Type: String
-    Default: https://gateway.eng.totalcloud.io/p19
+    Default:
     AllowedPattern: ^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$
     ConstraintDescription: It should be a valid URL.
     Description: Qualys API Gateway URL. Find the Gateway URL at https://www.qualys.com/platform-identification/
