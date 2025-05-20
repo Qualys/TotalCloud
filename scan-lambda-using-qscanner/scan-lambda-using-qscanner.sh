@@ -20,8 +20,13 @@ if [ -z "$IMAGE" ]; then
     flag=false
 fi
 
+if [ -z "$ABS_PATH_LAMBDA_DIR" ]; then
+    echo "The variable IMAGE is empty or not set."
+    flag=false
+fi
+
 if ! $flag; then
-    echo "Exiting Script - One or more env varibales not set properly."
+    echo "Exiting Script - One or more env variables not set properly."
     exit 1
 fi
 
@@ -30,10 +35,7 @@ fi
 # # Refer https://www.qualys.com/downloads/qscanner/
 #============================================================
 
-
-#!/bin/bash
-
-base_dir=$(pwd)  # Correctly capture the current working directory
+base_dir=$(pwd)
 
 echo ">>> Downloading QScanner"
 
@@ -75,9 +77,8 @@ fi
 
 echo ">>> QScanner Binary downloaded at '$qscanner_binary_path'"
 
-cd $qscanner_binary_path
+cd "$qscanner_binary_path" || exit
 ./qscanner --version
-
 
 if ./qscanner --version | grep -q "qscanner version"; then
     echo ">>> QScanner is installed"
@@ -87,22 +88,22 @@ else
 fi
 
 #============================================================
-# Build Image
+# Copy Lambda Dir into /app/app-lambda Build Image
 #============================================================
 
-cd $base_dir/app
-pwd
-ls
-docker build -t $IMAGE .
+rm -rf "$base_dir"/app/app-lambda/
+cp -r "$ABS_PATH_LAMBDA_DIR" "$base_dir"/app/app-lambda/
+
+cd "$base_dir"/app || exit
+
+docker build -t "$IMAGE" .
 
 #============================================================
-# Final Step - Scannnig for vulnerabilities using Qscanner
+# Final Step - Scanning for vulnerabilities using Qscanner
 #============================================================
 
-cd $qscanner_binary_path
-pwd
-ls
+cd "$qscanner_binary_path" || exit
 echo ">>> Current Working Directory: $(qscanner_binary_path)"
 
-echo ">>> Scanning for vulnerabilities using Qscanner, image $IMAGE\n"
-./qscanner image $IMAGE --pod $POD --access-token $ACCESS_TOKEN
+echo ">>> Scanning for vulnerabilities using Qscanner, image $IMAGE"
+./qscanner image "$IMAGE" --pod "$POD" --access-token "$ACCESS_TOKEN"
