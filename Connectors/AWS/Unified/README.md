@@ -1,4 +1,4 @@
-# Qualys CSPM and Asset Inventory AWS Unified Template
+# TotalCloud AWS CSPM and Asset Inventory Unified Template
 
 This AWS CloudFormation template automates the setup of IAM roles and policies for Qualys Cloud Security Posture Management (CSPM) or Asset Inventory in an AWS account or across an AWS Organizational Unit (OU). It supports AWS Commercial, GovCloud, and China regions, with optional StackSet deployment for multi-account environments.
 
