@@ -36,6 +36,11 @@ Use the Google Cloud CLI or a programming language (e.g., Python) to fetch a lis
 ```shell
 gcloud projects list --format="value(projectId)" > project_ids.txt
 ```
+To Check Count of Projects
+```shell
+sort project_ids.txt | uniq | wc -l
+```
+ 
 This command saves the list of project IDs to a text file, project_ids.txt.
 
 ### 3. Iterate Over the Project IDs
