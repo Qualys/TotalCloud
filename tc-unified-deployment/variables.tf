@@ -342,19 +342,19 @@ variable "eventbridge_integration_template_url" {
 }
 
 variable "totalcloud_cspm_role_template_url" {
-  description = "S3 URL for the EventBridge integration CloudFormation template"
+  description = "S3 URL for TotalCloud CSPM CloudFormation template"
   type        = string
   default     = "https://test123tash.s3.us-east-1.amazonaws.com/cspm.yaml"
 }
 
 variable "zero_touch_api_based_assessment_template_url" {
-  description = "S3 URL for the EventBridge integration CloudFormation template"
+  description = "S3 URL for Zero Touch API Based Assessment CloudFormation template"
   type        = string
   default     = "https://test123tash.s3.us-east-1.amazonaws.com/zero-touch.yaml"
 }
 
 variable "guardduty_integration_template_url" {
-  description = "S3 URL for the EventBridge integration CloudFormation template"
+  description = "S3 URL GuardDuty Integration CloudFormation template"
   type        = string
   default     = "https://test123tash.s3.us-east-1.amazonaws.com/guardduty.yaml"
 }
