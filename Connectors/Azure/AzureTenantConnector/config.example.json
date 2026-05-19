@@ -1,0 +1,24 @@
+{
+  "azure": {
+    "tenantId":     "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "clientId":     "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+    "clientSecret": "your-sp-client-secret",
+    "rootMg":       null
+  },
+
+  "qualys": {
+    "username":       "your-qualys-username",
+    "password":       "your-qualys-password",
+
+    "platform":       "US2",
+
+    "appType":        "cspm",
+    "activation":     ["VM", "PC"],
+    "runFrequency":   1440,
+    "isGovCloud":     false,
+    "disableOrphans": false,
+
+    "connectorTags":  ["azure-commercial", "production"],
+    "assetTags":      ["azure-asset", "cloud-discovery"]
+  }
+}
