@@ -1,0 +1,13 @@
+# Output files — generated at runtime, not for version control
+*-resources.csv
+*-resources-log.csv
+*-errors-log.txt
+
+# Input files with real account/project/subscription IDs
+projects.txt
+subscriptions.txt
+
+# Python
+__pycache__/
+*.pyc
+.venv/
