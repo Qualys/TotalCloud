@@ -7,6 +7,7 @@ logs/
 connector_state_*.csv
 connector_delete_*.csv
 connector_orphans_*.csv
+connector_restore_*.csv
 connector_report_*.json
 
 # Python
