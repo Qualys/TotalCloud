@@ -1,0 +1,15 @@
+# Credentials — never commit
+config.json
+.env
+
+# Output files
+logs/
+connector_state_*.csv
+connector_delete_*.csv
+connector_orphans_*.csv
+connector_report_*.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
