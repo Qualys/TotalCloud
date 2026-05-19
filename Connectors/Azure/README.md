@@ -6,10 +6,13 @@ Four tools depending on what you need:
 
 **[`SubscriptionConnector/`](SubscriptionConnector/)** — simpler Bash script if you already have a list of subscription IDs and just want to create connectors for them.
 
-**[`Setup/`](Setup/)** — Terraform to create the Azure Service Principal with `Reader` permissions. Run this first if you don't already have an SP set up.
+**[`Terraform/`](Terraform/)** — Terraform to create the Azure Service Principal with `Reader` permissions. Run this first if you don't already have an SP set up.
 
 **[`UpdateAssetTags/`](UpdateAssetTags/)** — update asset tags on connectors that already exist in Qualys.
 
 ---
 
-You'll need a Service Principal with `Reader` role on your tenant (or Management Group root) before any of these tools can connect. See [`Setup/`](Setup/) if you haven't done that yet.
+You'll need a Service Principal with `Reader` role on your tenant (or Management Group root) before any of these tools can connect. See [`Terraform/`](Terraform/) if you haven't done that yet.
+
+## Author
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions

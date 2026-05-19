@@ -20,7 +20,7 @@ This Terraform configuration sets up an Azure AD Application, creates a Service 
 
     ```bash
     git clone https://github.com/Qualys/TotalCloud.git
-    cd TotalCloud/Azure/SubscriptionConnector/Terraform/
+    cd TotalCloud/Connectors/Azure/Terraform/
     ```
 
 2. **Configure Your Azure Provider**
@@ -86,4 +86,4 @@ After running `terraform apply`, the following outputs will be displayed:
 - **Unsupported Arguments**: Verify the supported arguments for resources in the provider documentation.
 
 ## Author
-Yash Jhunjhunwala (Lead SME, Cloud Security)
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions

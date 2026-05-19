@@ -116,4 +116,4 @@ The template performs the following:
 - **Permission Issues**: Confirm the deploying user has `CAPABILITY_NAMED_IAM` permissions.
 
 ## Author
-Yash Jhunjhunwala (Lead Solutions Architect, Cloud Security)
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions

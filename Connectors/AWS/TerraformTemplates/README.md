@@ -68,4 +68,4 @@ terraform apply -var="username=your-username" -var="password=your-password" -var
 ```
 
 ## Author
-Yash Jhunjhunwala
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions

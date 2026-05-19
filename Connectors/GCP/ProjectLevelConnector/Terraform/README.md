@@ -92,4 +92,4 @@ Modify the provider configuration in provider.tf as needed for your environment.
 Always review the plan (terraform plan) before applying (terraform apply) to understand the changes that will be made to your infrastructure.
 
 ## Author
-Yash Jhunjhunwala (Lead SME, Cloud Security)
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions
