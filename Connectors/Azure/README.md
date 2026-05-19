@@ -1,81 +1,15 @@
-# Azure Subscription Level Connector Creation Script
+# Azure Connectors
 
-This script automates the creation of Azure Subscription Level Connector using the Qualys API. It reads connector data from a CSV file and sends requests to the Qualys API to create connectors accordingly.
+Four tools depending on what you need:
 
-## Prerequisites
+**[`TenantConnector/`](TenantConnector/)** — if you want full automation. It discovers every subscription in your tenant, creates connectors, handles orphan detection when subscriptions disappear, and can restore disabled connectors. Works for both Azure Commercial and Azure Government. This is the recommended path for most deployments.
 
-- Bash shell
-- cURL (Command-Line Tool and Library)
-- Qualys API credentials (username and password)
-- CSV file containing connector data (e.g., connector_data.csv)
+**[`SubscriptionConnector/`](SubscriptionConnector/)** — simpler Bash script if you already have a list of subscription IDs and just want to create connectors for them.
 
-## Usage
-1. Clone the repository:
-```bash
-git clone https://github.com/Qualys/TotalCloud.git
-```
+**[`Setup/`](Setup/)** — Terraform to create the Azure Service Principal with `Reader` permissions. Run this first if you don't already have an SP set up.
 
-2. Navigate to the script directory:
-```bash
-cd Connectors/Azure
-```
+**[`UpdateAssetTags/`](UpdateAssetTags/)** — update asset tags on connectors that already exist in Qualys.
 
-3. Update the script with your Qualys API credentials:
+---
 
-QUALYS_USERNAME="your_username"
-QUALYS_PASSWORD="your_password"
-
-4. Configure the Qualys API endpoint in the script. Ref:- https://www.qualys.com/platform-identification/
-- ex :- API_ENDPOINT="https://qualysapi.qg1.apps.qualys.ca/qps/rest/3.0/create/am/awsassetdataconnector"
-
-6. Place your CSV file (connector_data.csv) in the same directory as the script.
-
-7. Make the script executable:
-```bash
-chmod +x Create_Azure_Subscription_Level_Connector.sh
-```
-7. Run the script:
-```bash
-./Create_Azure_Subscription_Level_Connector.sh
-````
-
-## Configuration
-- API_ENDPOINT: Qualys API endpoint for creating AWS Asset Data Connectors. You can configure this endpoint if your Qualys instance has a different API URL.
-- DELAY_BETWEEN_REQUESTS: Delay (in seconds) between API requests to avoid rate limiting.
-- To Create AV only Connector
-Update the body parameters from
-```bash
-            "ConnectorAppInfoQList": [
-              {"set": {"ConnectorAppInfo": {"name": "AI", "identifier": "$subscription_id"}}},
-              {"set": {"ConnectorAppInfo": {"name": "CI", "identifier": "$subscription_id"}}},
-              {"set": {"ConnectorAppInfo": {"name": "CSA", "identifier": "$subscription_id"}}}
-              ]
-```
-to
-```bash
-"ConnectorAppInfoQList": [
-              {"set": {"ConnectorAppInfo": {"name": "AI", "identifier": "$subscription_id"}}}
-              ]
-```
-- To Create a CSPM Connector do not make any changes to the body
-- To Disable Asset Activation remove the below block
-```bash
-        "activation": {
-          "set": {
-            "ActivationModule": ["VM", "PC"]
-          }
-        },
-```
-
-For more configuration refer :- https://www.qualys.com/docs/qualys-connectors-api-v3-user-guide.pdf
-
-## Logging
-Logs are stored in the connector_creation.log file in the same directory as the script.
-
-## Notes
-The script skips the header row in the CSV file.
-Adjust the DELAY_BETWEEN_REQUESTS variable to control the delay between API requests.
-
-## Author
-Yash Jhunjhunwala (Senior Solutions Architect, Cloud Security)
-
+You'll need a Service Principal with `Reader` role on your tenant (or Management Group root) before any of these tools can connect. See [`Setup/`](Setup/) if you haven't done that yet.
