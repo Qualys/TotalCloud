@@ -1,0 +1,4 @@
+# Add one GCP project ID per line
+# Example:
+# my-project-123456
+# another-project-789012

@@ -17,7 +17,7 @@ Follow these steps to use the Terraform script:
 1. Clone the Repository:
 ```bash
 git clone https://github.com/Qualys/TotalCloud.git
-cd TotalCloud/GCP/Create_Service_Account_For_Org_Connector
+cd TotalCloud/Connectors/GCP/OrgLevelServiceAccount
 ```
 2. Configure Terraform:
 
@@ -54,3 +54,6 @@ To successfully run this Terraform script, you must have the following permissio
 
 ##  Important Notes
 Be cautious when running scripts that modify IAM roles and API access, as they can have a significant impact on your organization's security and resources.
+
+## Author
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions

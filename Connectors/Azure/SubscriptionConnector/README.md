@@ -17,7 +17,7 @@ git clone https://github.com/Qualys/TotalCloud.git
 
 2. Navigate to the script directory:
 ```bash
-cd Connectors/Azure
+cd Connectors/Azure/SubscriptionConnector
 ```
 
 3. Update the script with your Qualys API credentials:
@@ -40,7 +40,7 @@ chmod +x Create_Azure_Subscription_Level_Connector.sh
 ````
 
 ## Configuration
-- API_ENDPOINT: Qualys API endpoint for creating AWS Asset Data Connectors. You can configure this endpoint if your Qualys instance has a different API URL.
+- API_ENDPOINT: Qualys API endpoint for creating Azure Asset Data Connectors. You can configure this endpoint if your Qualys instance has a different API URL.
 - DELAY_BETWEEN_REQUESTS: Delay (in seconds) between API requests to avoid rate limiting.
 - To Create AV only Connector
 Update the body parameters from
@@ -77,5 +77,5 @@ The script skips the header row in the CSV file.
 Adjust the DELAY_BETWEEN_REQUESTS variable to control the delay between API requests.
 
 ## Author
-Yash Jhunjhunwala (Senior Solutions Architect, Cloud Security)
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions
 

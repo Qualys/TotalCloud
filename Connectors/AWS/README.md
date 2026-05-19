@@ -2,7 +2,7 @@
 
 Tools for onboarding AWS accounts into Qualys TotalCloud.
 
-**[`Setup/CloudFormation/`](Setup/CloudFormation/)** — CloudFormation template that creates the IAM role and policy Qualys needs. Supports single-account deployment or multi-account via StackSets (for AWS Organizations). Covers Commercial, GovCloud, and China regions. Start here if you haven't provisioned the IAM role yet.
+**[`CloudFormation/`](CloudFormation/)** — CloudFormation template that creates the IAM role and policy Qualys needs. Supports single-account deployment or multi-account via StackSets (for AWS Organizations). Covers Commercial, GovCloud, and China regions. Start here if you haven't provisioned the IAM role yet.
 
 **[`TerraformTemplates/`](TerraformTemplates/)** — Terraform alternative to the CloudFormation template for teams already using Terraform for IAM management.
 
@@ -13,3 +13,6 @@ Tools for onboarding AWS accounts into Qualys TotalCloud.
 ---
 
 Typical flow: deploy IAM role via CloudFormation → create connector in Qualys portal (or use `CreateAccountConnectors/` for bulk).
+
+## Author
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions

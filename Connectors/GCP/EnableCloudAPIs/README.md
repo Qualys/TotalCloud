@@ -84,3 +84,6 @@ resource "google_project_service" "cloud_resource_manager" {
 Run terraform init and terraform apply to execute the Terraform configuration.
 
 Please ensure that you have the necessary permissions to enable services for the projects within your organization. Also, use this Terraform configuration with caution, as enabling or disabling services can impact project functionality.
+
+## Author
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions

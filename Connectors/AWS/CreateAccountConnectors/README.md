@@ -77,4 +77,4 @@ The script skips the header row in the CSV file.
 Adjust the DELAY_BETWEEN_REQUESTS variable to control the delay between API requests.
 
 ## Author
-Yash Jhunjhunwala (Senior Solutions Architect, Cloud Security)
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions

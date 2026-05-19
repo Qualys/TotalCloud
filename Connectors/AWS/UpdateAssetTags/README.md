@@ -32,4 +32,4 @@ python aws_update_asset_tags.py
 ```
 
 ## Author
-Yash Jhunjhunwala (Senior Solutions Architect, Cloud Security)
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions
