@@ -278,7 +278,7 @@ The script calls these Google API services. Each service must be enabled on the 
 | Spanner API | `spanner` v1 | Spanner instances and databases |
 | BigQuery API | `bigquery` v2 | BigQuery datasets |
 | Artifact Registry API | `artifactregistry` v1 | Container images in GAR |
-| Vertex AI API | `aiplatform` v1 | Vertex AI Endpoints |
+| Vertex AI API | `aiplatform` v1 | Vertex AI Endpoints, Vertex AI Models |
 | Dialogflow API | `dialogflow` v3 | Vertex AI Agents (Dialogflow CX) |
 
 The script automatically skips any API call for a service that is not enabled in the project's service list, so no errors occur for unused services.
@@ -533,6 +533,7 @@ The table below maps every resource category to the underlying service and the f
 | Registry Container Images | Artifact Registry Docker images (up to `--max-image-tags` tags per image) | `--images` |
 | Vertex AI Endpoints | Vertex AI Endpoints (all locations) | `--ai` |
 | Vertex AI Agents | Dialogflow CX Agents (all locations) | `--ai` |
+| Vertex AI Models | Vertex AI Models (all locations) | `--ai` |
 
 > *GCP enables Data Buckets, PaaS Databases, and Data Warehouses by default (not gated behind `--data`). The `--data` flag has no effect on GCP currently; those resources are always counted.
 
@@ -590,6 +591,7 @@ Required Azure role beyond `Reader`: `Cognitive Services Reader` at subscription
 |----------|-----------|---------------|--------|-------|
 | Vertex AI Endpoints | `aiplatform` v1 | `aiplatform.googleapis.com` | `projects.locations.endpoints.list` with `locations/-` (all locations) | Only runs if `aiplatform.googleapis.com` is enabled in the project's service list. |
 | Vertex AI Agents | `dialogflow` v3 | `dialogflow.googleapis.com` | `projects.locations.agents.list` with `locations/-` (all locations) | Counts Dialogflow CX agents. Only runs if `dialogflow.googleapis.com` is enabled. |
+| Vertex AI Models | `aiplatform` v1 | `aiplatform.googleapis.com` | `projects.locations.models.list` with `locations/-` (all locations) | Only runs if `aiplatform.googleapis.com` is enabled in the project's service list. |
 
 Required GCP roles beyond `roles/viewer`: none — `roles/viewer` includes read access to both APIs.
 
@@ -620,3 +622,8 @@ Run `oci setup config` to create `~/.oci/config`, or confirm the file exists and
 
 **Counts seem too high for Lambda**
 The script counts each function plus up to `--max-lambda-versions` published versions per function. The default is 5. Set `--max-lambda-versions 0` to count only the `$LATEST` function and suppress version counting.
+
+---
+
+## Author
+Yash Jhunjhunwala, Lead SME Cloud Security Solutions
