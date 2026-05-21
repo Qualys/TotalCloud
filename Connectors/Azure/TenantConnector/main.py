@@ -181,11 +181,51 @@ def _qualys_settings(cfg: dict) -> dict:
         sys.exit(1)
 
     if perimeter_scan and scan_config:
-        valid_days = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"}
-        bad_days   = [d for d in (scan_config.get("daysOfWeek") or []) if d not in valid_days]
+        _VALID_DAYS       = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"}
+        _VALID_RECURRENCE = {"WEEKLY", "MONTHLY"}
+
+        # optionProfileId — required positive integer
+        opid = scan_config.get("optionProfileId")
+        if not opid or not isinstance(opid, int) or opid <= 0:
+            log.error("perimeterScanConfig.optionProfileId must be a positive integer (got %r).", opid)
+            sys.exit(1)
+
+        # recurrence
+        recurrence = (scan_config.get("recurrence") or "").upper()
+        if recurrence not in _VALID_RECURRENCE:
+            log.error(
+                "perimeterScanConfig.recurrence=%r is invalid. Allowed: %s",
+                recurrence, sorted(_VALID_RECURRENCE),
+            )
+            sys.exit(1)
+
+        # daysOfWeek — required for WEEKLY
+        days = scan_config.get("daysOfWeek") or []
+        bad_days = [d for d in days if d not in _VALID_DAYS]
         if bad_days:
             log.error("perimeterScanConfig.daysOfWeek contains invalid values: %s  (valid: %s)",
-                      bad_days, sorted(valid_days))
+                      bad_days, sorted(_VALID_DAYS))
+            sys.exit(1)
+        if recurrence == "WEEKLY" and not days:
+            log.error("perimeterScanConfig.daysOfWeek is required when recurrence=WEEKLY.")
+            sys.exit(1)
+
+        # startDate — required, MM/DD/YYYY
+        import re as _re
+        start_date = scan_config.get("startDate") or ""
+        if not _re.fullmatch(r"\d{2}/\d{2}/\d{4}", start_date):
+            log.error("perimeterScanConfig.startDate=%r must be in MM/DD/YYYY format.", start_date)
+            sys.exit(1)
+
+        # startTime — required, HH:MM
+        start_time = scan_config.get("startTime") or ""
+        if not _re.fullmatch(r"\d{2}:\d{2}", start_time):
+            log.error("perimeterScanConfig.startTime=%r must be in HH:MM format.", start_time)
+            sys.exit(1)
+
+        # timezone — required
+        if not (scan_config.get("timezone") or "").strip():
+            log.error("perimeterScanConfig.timezone is required.")
             sys.exit(1)
 
     return {
