@@ -2,7 +2,7 @@
 
 Four tools depending on what you need:
 
-**[`TenantConnector/`](TenantConnector/)** — if you want full automation. It discovers every subscription in your tenant, creates connectors, handles orphan detection when subscriptions disappear, and can restore disabled connectors. Works for both Azure Commercial and Azure Government. This is the recommended path for most deployments.
+**[`TenantConnector/`](TenantConnector/)** — if you want full automation. It discovers every subscription in your tenant, creates connectors, updates them when settings change, handles orphan detection when subscriptions disappear, and can restore disabled connectors. Supports perimeter scan (CPS), custom scan schedules, and both Azure Commercial and Azure Government. This is the recommended path for most deployments.
 
 **[`SubscriptionConnector/`](SubscriptionConnector/)** — simpler Bash script if you already have a list of subscription IDs and just want to create connectors for them.
 
