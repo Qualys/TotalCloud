@@ -12,13 +12,26 @@
 
     "platform":       "US2",
 
-    "appType":        "cspm",
+    "appModules":     ["AI", "CI", "CSA"],
     "activation":     ["VM", "PC"],
     "runFrequency":   1440,
     "isGovCloud":     false,
     "disableOrphans": false,
 
     "connectorTags":  ["azure-commercial", "production"],
-    "assetTags":      ["azure-asset", "cloud-discovery"]
+
+    "connectorNamePrefix": "",
+    "connectorNameSuffix": "",
+
+    "perimeterScan":  false,
+    "perimeterScanConfig": {
+      "optionProfileId": 2,
+      "recurrence":      "WEEKLY",
+      "daysOfWeek":      ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"],
+      "startDate":       "01/01/2025",
+      "startTime":       "02:00",
+      "timezone":        "UTC",
+      "scanPrefix":      "Azure Scan"
+    }
   }
 }

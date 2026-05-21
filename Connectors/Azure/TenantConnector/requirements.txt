@@ -3,4 +3,5 @@ azure-mgmt-resource==23.1.1
 azure-mgmt-managementgroups==1.0.0
 azure-mgmt-subscription==3.1.1
 requests==2.31.0
+six>=1.16.0
 python-dotenv==1.0.1

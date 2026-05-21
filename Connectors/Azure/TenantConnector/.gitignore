@@ -9,6 +9,12 @@ connector_delete_*.csv
 connector_orphans_*.csv
 connector_restore_*.csv
 connector_report_*.json
+connectors.csv
+
+# Live test run output (contains logs, CSVs, and per-test config.json with credentials)
+_lt_run_*/
+_live_test.py
+.claude/
 
 # Python
 __pycache__/
