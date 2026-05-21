@@ -57,17 +57,12 @@ def resolve_platform_url(platform_or_url: str) -> str:
     )
 
 _CREATE_PATH      = "/qps/rest/3.0/create/am/azureassetdataconnector"
+_DELETE_PATH      = "/qps/rest/3.0/delete/am/azureassetdataconnector"
 _SEARCH_PATH      = "/qps/rest/3.0/search/am/azureassetdataconnector"
 _UPDATE_PATH      = "/qps/rest/3.0/update/am/azureassetdataconnector"
 _TAG_SEARCH_PATH  = "/qps/rest/2.0/search/am/tag"
 _TAG_CREATE_PATH  = "/qps/rest/2.0/create/am/tag"
 _DEFAULT_RUN_FREQUENCY = 1440  # minutes (24 hours)
-
-# App-type → connectorAppInfos modules; activation is controlled separately
-APP_TYPE_CONFIG: dict[str, list[str]] = {
-    "AI":  ["AI"],
-    "CSA": ["AI", "CI", "CSA"],
-}
 
 VALID_ACTIVATION_MODULES = ["VM", "CERTVIEW", "SCA", "PC"]
 
@@ -75,10 +70,16 @@ VALID_ACTIVATION_MODULES = ["VM", "CERTVIEW", "SCA", "PC"]
 _MAX_NAME_LEN = 255
 
 
-def resolve_connector_name(display_name: Optional[str], subscription_id: str) -> str:
-    """Use the subscription alias if present, else azure-sub-<id>. Caps at 255 chars."""
+def resolve_connector_name(
+    display_name: Optional[str],
+    subscription_id: str,
+    prefix: str = "",
+    suffix: str = "",
+) -> str:
+    """Build connector name: {prefix}{subscription_name}{suffix}, capped at 255 chars."""
     alias = (display_name or "").strip()
-    name = alias if alias else f"azure-sub-{subscription_id}"
+    base  = alias if alias else f"azure-sub-{subscription_id}"
+    name  = f"{prefix}{base}{suffix}"
     return name[:_MAX_NAME_LEN]
 
 
@@ -104,6 +105,64 @@ def _xe(value: str) -> str:
     )
 
 
+def _build_scan_config_xml(scan_cfg: dict) -> str:
+    """Build connectorScanSetting + connectorScanConfig XML blocks."""
+    days_xml = "\n".join(
+        f"                            <Day>{d}</Day>"
+        for d in (scan_cfg.get("daysOfWeek") or [])
+    )
+    days_block = f"""
+                        <daysOfWeek>
+                            <set>
+{days_xml}
+                            </set>
+                        </daysOfWeek>""" if days_xml else ""
+
+    return f"""
+            <connectorScanSetting>
+                <isCustomScanConfigEnabled>true</isCustomScanConfigEnabled>
+            </connectorScanSetting>
+            <connectorScanConfig>
+                <set>
+                    <ConnectorScanConfiguration>{days_block}
+                        <optionProfileId>{scan_cfg.get("optionProfileId", "")}</optionProfileId>
+                        <recurrence>{scan_cfg.get("recurrence", "WEEKLY")}</recurrence>
+                        <scanPrefix>{_xe(scan_cfg.get("scanPrefix", ""))}</scanPrefix>
+                        <startDate>{scan_cfg.get("startDate", "")}</startDate>
+                        <startTime>{scan_cfg.get("startTime", "")}</startTime>
+                        <timezone>{scan_cfg.get("timezone", "UTC")}</timezone>
+                    </ConnectorScanConfiguration>
+                </set>
+            </connectorScanConfig>"""
+
+
+def _build_app_infos_xml(app_modules: list[str], subscription_id: str, tag_id: Optional[int] = None) -> str:
+    """
+    Build <connectorAppInfos> block using the correct ConnectorAppInfoQList structure.
+    Valid app module names: AI (Asset Inventory), CI (Cloud Inventory), CSA (Cloud Security Assessment).
+    Each module gets its own <ConnectorAppInfoQList> wrapper per the API spec.
+    """
+    if not app_modules:
+        return ""
+    lists_xml = ""
+    for module in app_modules:
+        tag_xml = f"\n                            <tagId>{tag_id}</tagId>" if tag_id else ""
+        lists_xml += f"""
+                    <ConnectorAppInfoQList>
+                        <set>
+                            <ConnectorAppInfo>
+                                <name>{module}</name>
+                                <identifier>{_xe(subscription_id)}</identifier>{tag_xml}
+                            </ConnectorAppInfo>
+                        </set>
+                    </ConnectorAppInfoQList>"""
+    return f"""
+            <connectorAppInfos>
+                <set>{lists_xml}
+                </set>
+            </connectorAppInfos>"""
+
+
 def _build_create_xml(
     name: str,
     description: str,
@@ -112,18 +171,28 @@ def _build_create_xml(
     application_id: str,
     authentication_key: str,
     is_gov_cloud: bool,
-    app_modules: list[str],
     activation_modules: list[str],
     run_frequency: int,
     connector_tag_ids: list[int],
-    asset_tag_ids: list[int],
+    perimeter_scan: bool = False,
+    scan_config: Optional[dict] = None,
+    app_modules: Optional[list[str]] = None,
 ) -> str:
     act_items = "\n".join(
         f"                    <ActivationModule>{m}</ActivationModule>"
         for m in activation_modules
     )
+    activation_xml = ""
+    if act_items:
+        activation_xml = f"""
+            <activation>
+                <set>
+{act_items}
+                </set>
+            </activation>"""
 
     tags_xml = ""
+    first_tag_id = connector_tag_ids[0] if connector_tag_ids else None
     if connector_tag_ids:
         tag_items = "\n".join(
             f"                    <TagSimple><id>{tid}</id></TagSimple>"
@@ -136,65 +205,74 @@ def _build_create_xml(
                 </set>
             </defaultTags>"""
 
-    def _app_list(app_name: str) -> str:
-        if asset_tag_ids:
-            entries = "\n".join(
-                f"""                            <ConnectorAppInfo>
-                                <name>{app_name}</name>
-                                <identifier>{_xe(subscription_id)}</identifier>
-                                <tagId>{tid}</tagId>
-                            </ConnectorAppInfo>"""
-                for tid in asset_tag_ids
-            )
-        else:
-            entries = f"""                            <ConnectorAppInfo>
-                                <name>{app_name}</name>
-                                <identifier>{_xe(subscription_id)}</identifier>
-                            </ConnectorAppInfo>"""
-        return f"""                    <ConnectorAppInfoQList>
-                        <set>
-{entries}
-                        </set>
-                    </ConnectorAppInfoQList>"""
+    # connectorAppInfos: present when app_modules specified (AI/CI/CSA)
+    # Per API docs, each module needs its own ConnectorAppInfoQList wrapper
+    app_infos_xml = _build_app_infos_xml(app_modules or [], subscription_id, tag_id=first_tag_id)
 
-    app_lists = "\n".join(_app_list(m) for m in app_modules)
+    # isCPSEnabled only included when enabling CPS (never send false)
+    cps_xml = "\n            <isCPSEnabled>true</isCPSEnabled>" if perimeter_scan else ""
+
+    # When CPS is enabled, connectorScanSetting is always required.
+    # If no custom scan_config is provided, use the global scan configuration.
+    scan_xml = ""
+    if perimeter_scan:
+        if scan_config:
+            scan_xml = _build_scan_config_xml(scan_config)
+        else:
+            scan_xml = """
+            <connectorScanSetting>
+                <isCustomScanConfigEnabled>false</isCustomScanConfigEnabled>
+            </connectorScanSetting>"""
 
     return f"""<?xml version="1.0" encoding="UTF-8" ?>
 <ServiceRequest>
     <data>
         <AzureAssetDataConnector>
             <name>{_xe(name)}</name>
-            <description>{_xe(description)}</description>{tags_xml}
-            <activation>
-                <set>
-{act_items}
-                </set>
-            </activation>
+            <description>{_xe(description)}</description>{tags_xml}{activation_xml}
             <disabled>false</disabled>
             <runFrequency>{run_frequency}</runFrequency>
-            <isRemediationEnabled>false</isRemediationEnabled>
+            <isRemediationEnabled>false</isRemediationEnabled>{cps_xml}
             <isGovCloudConfigured>{"true" if is_gov_cloud else "false"}</isGovCloudConfigured>
             <authRecord>
                 <applicationId>{_xe(application_id)}</applicationId>
                 <directoryId>{_xe(directory_id)}</directoryId>
                 <subscriptionId>{_xe(subscription_id)}</subscriptionId>
                 <authenticationKey>{_xe(authentication_key)}</authenticationKey>
-            </authRecord>
-            <connectorAppInfos>
-                <set>
-{app_lists}
-                </set>
-            </connectorAppInfos>
+            </authRecord>{app_infos_xml}{scan_xml}
         </AzureAssetDataConnector>
     </data>
 </ServiceRequest>"""
 
 
-def _parse_response(xml_text: str) -> tuple[bool, Optional[str], Optional[str]]:
+_PERMISSION_CODES = frozenset({
+    "UNAUTHORIZED", "FORBIDDEN", "INVALID_CREDENTIALS", "NOT_AUTHORIZED",
+})
+
+_PERMISSION_GUIDANCE = (
+    "Check: (1) Qualys username/password in config, "
+    "(2) platform key matches your Qualys account region, "
+    "(3) your Qualys account has the Connectors module licensed."
+)
+
+
+def _classify_http_error(status_code: int) -> Optional[str]:
+    if status_code == 401:
+        return f"HTTP 401 Unauthorized — invalid Qualys credentials. {_PERMISSION_GUIDANCE}"
+    if status_code == 403:
+        return f"HTTP 403 Forbidden — Connectors module not licensed or IP not allowed. {_PERMISSION_GUIDANCE}"
+    return None
+
+
+def _parse_response(resp: "requests.Response") -> tuple[bool, Optional[str], Optional[str]]:
+    http_err = _classify_http_error(resp.status_code)
+    if http_err:
+        return False, None, http_err
+
     try:
-        root = ET.fromstring(xml_text)
+        root = ET.fromstring(resp.text)
     except ET.ParseError as exc:
-        return False, None, f"XML parse error: {exc}"
+        return False, None, f"XML parse error (HTTP {resp.status_code}): {exc}"
 
     code = root.findtext("responseCode", "")
     if code == "SUCCESS":
@@ -205,6 +283,10 @@ def _parse_response(xml_text: str) -> tuple[bool, Optional[str], Optional[str]]:
         or root.findtext("responseMessage")
         or "Unknown error"
     )
+
+    if code in _PERMISSION_CODES:
+        return False, None, f"{code}: {err}. {_PERMISSION_GUIDANCE}"
+
     return False, None, f"{code}: {err}"
 
 
@@ -286,6 +368,44 @@ class QualysClient:
 
         return all_items
 
+    def verify_access(self) -> tuple[bool, str]:
+        """
+        Lightweight pre-flight check: validates credentials and Connectors module access.
+        Returns (ok, reason). On failure, reason is an actionable message.
+        """
+        body = """<?xml version="1.0" encoding="UTF-8" ?>
+<ServiceRequest>
+    <preferences>
+        <limitResults>1</limitResults>
+    </preferences>
+</ServiceRequest>"""
+        try:
+            resp = self._post(_SEARCH_PATH, body, retries=1)
+        except requests.RequestException as exc:
+            return False, f"Could not reach Qualys API at {self._base}: {exc}. Check platform key and network."
+
+        http_err = _classify_http_error(resp.status_code)
+        if http_err:
+            return False, http_err
+
+        try:
+            root = ET.fromstring(resp.text)
+        except ET.ParseError as exc:
+            return False, f"Unexpected response from Qualys (HTTP {resp.status_code}): {exc}"
+
+        code = root.findtext("responseCode", "")
+        if code == "SUCCESS":
+            return True, "OK"
+
+        err = (
+            root.findtext("responseErrorDetails/errorMessage")
+            or root.findtext("responseMessage")
+            or "Unknown error"
+        )
+        if code in _PERMISSION_CODES:
+            return False, f"{code}: {err}. {_PERMISSION_GUIDANCE}"
+        return False, f"{code}: {err}"
+
     def connector_exists(self, subscription_id: str) -> Optional[str]:
         log.debug("Checking if connector exists for subscription %s", subscription_id)
         body = f"""<?xml version="1.0" encoding="UTF-8" ?>
@@ -318,18 +438,18 @@ class QualysClient:
         authentication_key: str,
         description: str = "",
         is_gov_cloud: bool = True,
-        app_type: str = "CSA",
         activation_modules: Optional[list[str]] = None,
         run_frequency: int = _DEFAULT_RUN_FREQUENCY,
         connector_tag_ids: Optional[list[int]] = None,
-        asset_tag_ids: Optional[list[int]] = None,
         skip_if_exists: bool = True,
+        perimeter_scan: bool = False,
+        scan_config: Optional[dict] = None,
+        app_modules: Optional[list[str]] = None,
     ) -> ConnectorResult:
-        app_modules = APP_TYPE_CONFIG.get(app_type.upper(), APP_TYPE_CONFIG["CSA"])
-        activation_modules = activation_modules or []
+        activation_modules = list(activation_modules or [])
         log.debug(
-            "Connector params — app_type=%s app_modules=%s activation=%s gov=%s freq=%d",
-            app_type, app_modules, activation_modules, is_gov_cloud, run_frequency,
+            "Connector params — activation=%s app_modules=%s gov=%s freq=%d perimeter_scan=%s",
+            activation_modules, app_modules, is_gov_cloud, run_frequency, perimeter_scan,
         )
 
         base_result = dict(
@@ -356,21 +476,23 @@ class QualysClient:
             application_id=application_id,
             authentication_key=authentication_key,
             is_gov_cloud=is_gov_cloud,
-            app_modules=app_modules,
             activation_modules=activation_modules,
             run_frequency=run_frequency,
             connector_tag_ids=connector_tag_ids or [],
-            asset_tag_ids=asset_tag_ids or [],
+            perimeter_scan=perimeter_scan,
+            scan_config=scan_config,
+            app_modules=app_modules,
         )
 
         log.info("Creating connector '%s' (%s)", connector_name, subscription_id)
+        log.debug("Request XML:\n%s", body)
         try:
             resp = self._post(_CREATE_PATH, body)
         except requests.RequestException as exc:
             return ConnectorResult(**base_result, success=False, status="failed", note=str(exc))
 
-        log.debug("Response %d: %s", resp.status_code, resp.text[:400])
-        success, cid, error = _parse_response(resp.text)
+        log.debug("Response %d: %s", resp.status_code, resp.text)
+        success, cid, error = _parse_response(resp)
 
         if success:
             log.info("  ✓ id=%s", cid)
@@ -384,6 +506,88 @@ class QualysClient:
             status="created" if success else "failed",
             note=error if not success else None,
         )
+
+    def update_connector(
+        self,
+        connector_id: str,
+        connector_name: str,
+        subscription_id: str,
+        subscription_name: str,
+        management_group: str,
+        directory_id: str,
+        application_id: str,
+        authentication_key: str,
+        is_gov_cloud: bool = True,
+        activation_modules: Optional[list[str]] = None,
+        run_frequency: int = _DEFAULT_RUN_FREQUENCY,
+        connector_tag_ids: Optional[list[int]] = None,
+        perimeter_scan: bool = False,
+        scan_config: Optional[dict] = None,
+        app_modules: Optional[list[str]] = None,
+    ) -> ConnectorResult:
+        activation_modules = list(activation_modules or [])
+
+        base_result = dict(
+            subscription_id=subscription_id,
+            subscription_name=subscription_name,
+            connector_name=connector_name,
+            management_group=management_group,
+        )
+
+        body = _build_create_xml(
+            name=connector_name,
+            description=f"Auto-created — subscription {subscription_id}",
+            subscription_id=subscription_id,
+            directory_id=directory_id,
+            application_id=application_id,
+            authentication_key=authentication_key,
+            is_gov_cloud=is_gov_cloud,
+            activation_modules=activation_modules,
+            run_frequency=run_frequency,
+            connector_tag_ids=connector_tag_ids or [],
+            perimeter_scan=perimeter_scan,
+            scan_config=scan_config,
+            app_modules=app_modules,
+        )
+
+        log.info("Updating connector id=%s '%s' (%s)", connector_id, connector_name, subscription_id)
+        try:
+            resp = self._post(f"{_UPDATE_PATH}/{connector_id}", body)
+        except requests.RequestException as exc:
+            return ConnectorResult(**base_result, success=False, status="failed", note=str(exc))
+
+        log.debug("Response %d: %s", resp.status_code, resp.text[:400])
+
+        http_err = _classify_http_error(resp.status_code)
+        if http_err:
+            log.warning("  ✗ %s: %s", subscription_id, http_err)
+            return ConnectorResult(**base_result, success=False, status="failed", note=http_err)
+
+        try:
+            root = ET.fromstring(resp.text)
+        except ET.ParseError as exc:
+            note = f"XML parse error: {exc}"
+            return ConnectorResult(**base_result, success=False, status="failed", note=note)
+
+        code = root.findtext("responseCode", "")
+        if code == "SUCCESS":
+            log.info("  ✓ id=%s updated", connector_id)
+            return ConnectorResult(
+                **base_result, success=True,
+                connector_id=connector_id, status="updated",
+            )
+
+        err = (
+            root.findtext("responseErrorDetails/errorMessage")
+            or root.findtext("responseMessage")
+            or "Unknown error"
+        )
+        if code in _PERMISSION_CODES:
+            err = f"{code}: {err}. {_PERMISSION_GUIDANCE}"
+        else:
+            err = f"{code}: {err}"
+        log.warning("  ✗ %s: %s", subscription_id, err)
+        return ConnectorResult(**base_result, success=False, status="failed", note=err)
 
     def resolve_tag_names(self, tag_names: list[str]) -> list[int]:
         log.info("Resolving %d tag name(s): %s", len(tag_names), tag_names)
@@ -563,6 +767,26 @@ class QualysClient:
             log.warning("  ✗ Exception enabling %s: %s", connector_id, exc)
             return False, str(exc)
 
+    def delete_connector(self, connector_id: str) -> tuple[bool, str]:
+        """Delete a connector by ID. Returns (success, message)."""
+        log.info("Deleting connector id=%s", connector_id)
+        try:
+            resp = self._session.post(
+                f"{self._base}{_DELETE_PATH}/{connector_id}",
+                data=b"", auth=self._auth, timeout=30,
+            )
+            log.debug("  delete HTTP %d", resp.status_code)
+            root = ET.fromstring(resp.text)
+            if root.findtext("responseCode") == "SUCCESS":
+                log.info("  ✓ Connector %s deleted", connector_id)
+                return True, "deleted"
+            err = root.findtext("responseErrorDetails/errorMessage") or f"HTTP {resp.status_code}"
+            log.warning("  ✗ Failed to delete %s: %s", connector_id, err)
+            return False, err
+        except Exception as exc:
+            log.warning("  ✗ Exception deleting %s: %s", connector_id, exc)
+            return False, str(exc)
+
     def disable_orphan_connectors(
         self,
         active_subscription_ids: set[str],
@@ -608,14 +832,17 @@ class QualysClient:
         application_id: str,
         authentication_key: str,
         is_gov_cloud: bool = True,
-        app_type: str = "CSA",
         activation_modules: Optional[list[str]] = None,
         run_frequency: int = _DEFAULT_RUN_FREQUENCY,
         connector_tag_ids: Optional[list[int]] = None,
-        asset_tag_ids: Optional[list[int]] = None,
         parallel: int = 1,
         delay_between: float = 2.0,
         skip_if_exists: bool = True,
+        name_prefix: str = "",
+        name_suffix: str = "",
+        perimeter_scan: bool = False,
+        scan_config: Optional[dict] = None,
+        app_modules: Optional[list[str]] = None,
     ) -> list[ConnectorResult]:
         """
         Create connectors for all subscriptions.
@@ -624,13 +851,12 @@ class QualysClient:
         to avoid bursting Qualys rate limits.
         """
         log.info(
-            "Bulk create — %d subscription(s)  app_type=%s  activation=%s  "
-            "freq=%d min  gov=%s  parallel=%d  delay=%.1fs",
-            len(subscriptions), app_type, activation_modules or [],
-            run_frequency, is_gov_cloud, parallel, delay_between,
+            "Bulk create — %d subscription(s)  activation=%s  "
+            "freq=%d min  gov=%s  perimeter_scan=%s  parallel=%d  delay=%.1fs",
+            len(subscriptions), activation_modules or [],
+            run_frequency, is_gov_cloud, perimeter_scan, parallel, delay_between,
         )
         total = len(subscriptions)
-        # Pre-allocate result slots so we preserve input order regardless of thread completion order
         results_map: dict[int, ConnectorResult] = {}
         lock = threading.Lock()
 
@@ -638,10 +864,7 @@ class QualysClient:
             sub_id    = sub["subscriptionId"]
             disp      = sub.get("displayName", "")
             mg        = sub.get("managementGroupName", "")
-            conn_name = resolve_connector_name(disp, sub_id)
-            desc      = f"Auto-created — subscription {sub_id}"
-            if mg:
-                desc += f" (MG: {mg})"
+            conn_name = resolve_connector_name(disp, sub_id, prefix=name_prefix, suffix=name_suffix)
             log.info("[%d/%d] %s", idx, total, conn_name)
             result = self.create_connector(
                 connector_name=conn_name,
@@ -651,15 +874,17 @@ class QualysClient:
                 directory_id=directory_id,
                 application_id=application_id,
                 authentication_key=authentication_key,
-                description=desc,
+                description=f"Auto-created — subscription {sub_id}",
                 is_gov_cloud=is_gov_cloud,
-                app_type=app_type,
                 activation_modules=activation_modules,
                 run_frequency=run_frequency,
                 connector_tag_ids=connector_tag_ids,
-                asset_tag_ids=asset_tag_ids,
                 skip_if_exists=skip_if_exists,
+                perimeter_scan=perimeter_scan,
+                scan_config=scan_config,
+                app_modules=app_modules,
             )
+
             with lock:
                 results_map[idx] = result
             return idx, result
