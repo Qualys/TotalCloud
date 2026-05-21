@@ -163,21 +163,18 @@ def _qualys_settings(cfg: dict) -> dict:
     perimeter_scan = bool(q.get("perimeterScan", False))
     scan_config    = q.get("perimeterScanConfig") or None
 
-    _VALID_APP_MODULES = {"AI", "CI", "CSA"}
-    raw_app_modules = q.get("appModules") or []
-    app_modules = [m.upper() for m in raw_app_modules]
-    bad_mods = [m for m in app_modules if m not in _VALID_APP_MODULES]
-    if bad_mods:
-        log.error("Config qualys.appModules contains invalid values: %s  (valid: AI, CI, CSA)", bad_mods)
+    _APP_TYPE_MAP = {
+        "asset-inventory": ["AI"],
+        "cspm":            ["AI", "CI", "CSA"],
+    }
+    raw_app_type = (q.get("appType") or "").strip().lower()
+    if raw_app_type not in _APP_TYPE_MAP:
+        log.error(
+            "Config qualys.appType=%r is invalid. Allowed values: %s",
+            raw_app_type, list(_APP_TYPE_MAP),
+        )
         sys.exit(1)
-
-    # CSA and CI both require the full AI+CI+CSA bundle
-    if ("CSA" in app_modules or "CI" in app_modules):
-        if not {"AI", "CI", "CSA"}.issubset(set(app_modules)):
-            log.error(
-                "Config qualys.appModules: CI and CSA must always be enabled together with AI (use [\"AI\",\"CI\",\"CSA\"])."
-            )
-            sys.exit(1)
+    app_modules = _APP_TYPE_MAP[raw_app_type]
 
     if perimeter_scan and "VM" not in activation:
         log.error("Config: perimeterScan=true requires \"VM\" in qualys.activation.")

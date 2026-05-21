@@ -12,7 +12,7 @@
 
     "platform":       "US2",
 
-    "appModules":     ["AI", "CI", "CSA"],
+    "appType":        "cspm",
     "activation":     ["VM", "PC"],
     "runFrequency":   1440,
     "isGovCloud":     false,
