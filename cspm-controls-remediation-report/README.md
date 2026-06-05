@@ -110,10 +110,16 @@ python3 cspm_remediation_report.py \
 
 ### Using Config File
 
-Create a `.config` file:
+Copy the provided example and fill in your credentials (the real `.config` is gitignored):
+```bash
+cp .config.example .config
 ```
-username=your-username
-password=your-password
+
+`.config` format:
+```ini
+[creds]
+username = your-username
+password = your-password
 ```
 
 Or a `config.json` file:
