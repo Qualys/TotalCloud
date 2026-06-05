@@ -1,0 +1,14 @@
+# Credentials — never commit these
+.config
+config.json
+
+# Generated output
+reports/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
