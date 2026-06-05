@@ -333,25 +333,56 @@
         
         // Export to CSV
         function exportCSV() {
-            const table = document.getElementById('controlsTable');
-            if (!table) return;
-            
-            let csv = [];
-            const headers = Array.from(table.querySelectorAll('th')).map(th => 
-                th.textContent.replace(/[↕↑↓]/g, '').trim()
-            );
-            csv.push(headers.join(','));
-            
-            table.querySelectorAll('tbody tr').forEach(row => {
-                if (row.style.display !== 'none') {
-                    const cells = Array.from(row.querySelectorAll('td')).map(td => 
-                        '"' + td.textContent.trim().replace(/"/g, '""') + '"'
-                    );
-                    csv.push(cells.join(','));
-                }
+            const activePanel = document.querySelector('.content-panel.active');
+            if (!activePanel) return;
+
+            const stripHtml = (value) => {
+                if (!value) return '';
+                const tmp = document.createElement('div');
+                tmp.innerHTML = value;
+                return tmp.textContent.replace(/\s+/g, ' ').trim();
+            };
+            const esc = (v) => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+
+            const headers = ['CID', 'Control Name', 'Cloud Provider', 'Criticality',
+                             'Control Type', 'Service Type', 'Resource Type', 'Execution Type',
+                             'Remediation Enabled', 'Policies', 'Specification', 'Rationale',
+                             'Manual Remediation', 'References', 'Evaluation Description',
+                             'Created', 'Modified'];
+            let csv = [headers.map(esc).join(',')];
+            const panelCsp = activePanel.id.replace('panel-', '');
+
+            activePanel.querySelectorAll('.controls-table tbody tr').forEach(row => {
+                if (row.style.display === 'none') return;
+                const csp = row.dataset.csp || panelCsp;
+                const cid = row.querySelector('.cid')?.textContent.replace('CID-', '');
+                const control = (controlsData[csp] || {})[cid];
+                if (!control) return;
+                csv.push([
+                    control.cid,
+                    control.controlName,
+                    control.provider || csp,
+                    control.criticality,
+                    control.controlType,
+                    control.serviceType,
+                    control.resourceType,
+                    control.executionType,
+                    control.remediationEnabled,
+                    (control.policyNames || []).join('; '),
+                    stripHtml(control.specification),
+                    stripHtml(control.rationale),
+                    stripHtml(control.manualRemediation),
+                    stripHtml(control.references),
+                    stripHtml(control.evaluation && control.evaluation.evaluationDescription),
+                    control.created,
+                    control.modified
+                ].map(esc).join(','));
             });
-            
-            const blob = new Blob([csv.join('\n')], { type: 'text/csv' });
+
+            if (csv.length === 1) { showToast('No visible controls to export'); return; }
+
+            // Prepend BOM so Excel opens UTF-8 correctly
+            const blob = new Blob(['﻿' + csv.join('\n')], { type: 'text/csv;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
