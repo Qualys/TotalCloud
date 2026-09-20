@@ -1,5 +1,8 @@
 import requests
 
+
+REQUEST_TIMEOUT_SECONDS = 30
+
 # Define platform-specific QualysGuard and Qualys API URLs
 platform_urls = {
     "US1": {
@@ -115,7 +118,13 @@ else:
             }
 
             # Make the API request to source_url with authentication
-            response = requests.get(source_url, headers=headers, params=params, auth=(username, password))
+            response = requests.get(
+                source_url,
+                headers=headers,
+                params=params,
+                auth=(username, password),
+                timeout=REQUEST_TIMEOUT_SECONDS,
+            )
 
             # Check if the request was successful
             if response.status_code == 200:
@@ -165,7 +174,13 @@ else:
         }
 
         # Make the POST request to destination_url to add all external IP addresses
-        response = requests.post(destination_url, headers=headers, data=data, auth=(username, password))
+        response = requests.post(
+            destination_url,
+            headers=headers,
+            data=data,
+            auth=(username, password),
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
 
         # Check if the request was successful
         if response.status_code == 200:
@@ -183,7 +198,13 @@ else:
         }
 
         # Make the POST request to scan_url to launch the scan
-        scan_response = requests.post(scan_url, headers=headers, data=scan_data, auth=(username, password))
+        scan_response = requests.post(
+            scan_url,
+            headers=headers,
+            data=scan_data,
+            auth=(username, password),
+            timeout=REQUEST_TIMEOUT_SECONDS,
+        )
 
         # Check if the scan request was successful
         if scan_response.status_code == 200:
