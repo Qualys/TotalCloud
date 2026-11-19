@@ -1,0 +1,30 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Local data + secrets (NEVER commit)
+backend/data/
+data/
+*.db
+*.db-wal
+*.db-shm
+secret.key
+
+# Node
+frontend/node_modules/
+frontend/.tsbuild/
+*.tsbuildinfo
+# NOTE: frontend/dist/ is intentionally NOT ignored — the pre-built UI is committed so the
+# app runs with zero Node/npm on the customer's machine (run.sh serves it as-is). Rebuild with
+# `cd frontend && npm ci && npm run build` only when the frontend source changes.
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
+*.log
+
+# Background-mode runtime
+.qpd.pid
+qpd.log

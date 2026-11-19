@@ -1,0 +1,110 @@
+{
+  "content": [
+    {
+      "controlId": "1",
+      "controlName": "Ensure IAM users have MFA enabled",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "HIGH",
+      "service": "IAM",
+      "result": "FAIL",
+      "passedResources": 19,
+      "failedResources": 5,
+      "passWithExceptionResources": 0
+    },
+    {
+      "controlId": "2",
+      "controlName": "Ensure IAM password policy requires minimum length of 14",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "MEDIUM",
+      "service": "IAM",
+      "result": "FAIL",
+      "passedResources": 0,
+      "failedResources": 1,
+      "passWithExceptionResources": 0
+    },
+    {
+      "controlId": "3",
+      "controlName": "Ensure S3 buckets are not publicly readable",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "CRITICAL",
+      "service": "S3",
+      "result": "FAIL",
+      "passedResources": 14,
+      "failedResources": 4,
+      "passWithExceptionResources": 0
+    },
+    {
+      "controlId": "4",
+      "controlName": "Ensure security groups do not allow 0.0.0.0/0 to port 22",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "HIGH",
+      "service": "EC2",
+      "result": "FAIL",
+      "passedResources": 31,
+      "failedResources": 9,
+      "passWithExceptionResources": 0
+    },
+    {
+      "controlId": "5",
+      "controlName": "Ensure EBS volumes are encrypted",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "MEDIUM",
+      "service": "EC2",
+      "result": "FAIL",
+      "passedResources": 43,
+      "failedResources": 12,
+      "passWithExceptionResources": 0
+    },
+    {
+      "controlId": "6",
+      "controlName": "Ensure CloudTrail is enabled in all regions",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "HIGH",
+      "service": "CLOUDTRAIL",
+      "result": "FAIL",
+      "passedResources": 2,
+      "failedResources": 1,
+      "passWithExceptionResources": 0
+    },
+    {
+      "controlId": "7",
+      "controlName": "Ensure RDS instances are encrypted at rest",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "MEDIUM",
+      "service": "RDS",
+      "result": "FAIL",
+      "passedResources": 9,
+      "failedResources": 3,
+      "passWithExceptionResources": 0
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 300,
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 7,
+  "last": true,
+  "first": true,
+  "number": 0,
+  "size": 300,
+  "numberOfElements": 7,
+  "empty": false
+}

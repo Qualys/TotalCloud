@@ -1,0 +1,7 @@
+# Minimal deps — pinned to compatible floors, not exact versions, so pip picks a
+# wheel that matches the customer's Python (works on 3.9–3.14). No native build needed.
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30
+pydantic>=2.9
+cryptography>=42.0
+openpyxl>=3.1          # .xlsx export (pure Python, no native build)

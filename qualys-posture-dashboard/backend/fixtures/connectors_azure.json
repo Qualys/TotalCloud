@@ -1,0 +1,26 @@
+{
+  "content": [
+    {
+      "connectorId": "conn-azure-0",
+      "name": "azure-connector-0",
+      "subscriptionId": "a1b2c3d4-5e6f-7788-99aa-bbccddeeff00",
+      "state": "SUCCESS",
+      "provider": "AZURE"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 50,
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 1,
+  "last": true,
+  "first": true,
+  "number": 0,
+  "size": 50,
+  "numberOfElements": 1,
+  "empty": false
+}

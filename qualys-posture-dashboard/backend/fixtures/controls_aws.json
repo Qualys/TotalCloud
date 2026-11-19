@@ -1,0 +1,96 @@
+{
+  "control": [
+    {
+      "cid": "1",
+      "controlName": "Ensure IAM users have MFA enabled",
+      "criticality": "HIGH",
+      "serviceType": "IAM",
+      "resourceType": "IAM_USER",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>In the IAM console open each user &gt; Security credentials &gt; Assign MFA device (virtual or hardware). Enforce with an IAM policy that denies actions unless <code>aws:MultiFactorAuthPresent</code> is true.</p>",
+      "cliRemediation": "aws iam enable-mfa-device --user-name <user> --serial-number <mfa-arn> --authentication-code1 <c1> --authentication-code2 <c2>",
+      "buildTimeRemediation": "# Enforce via an IAM policy condition\ncondition { test = \"Bool\", variable = \"aws:MultiFactorAuthPresent\", values = [\"true\"] }",
+      "rationale": "MFA adds a second authentication factor, protecting accounts even if a password is leaked."
+    },
+    {
+      "cid": "2",
+      "controlName": "Ensure IAM password policy requires minimum length of 14",
+      "criticality": "MEDIUM",
+      "serviceType": "IAM",
+      "resourceType": "IAM_PASSWORD",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>IAM &gt; Account settings &gt; Password policy &gt; set <b>Minimum password length</b> to 14 or greater.</p>",
+      "cliRemediation": "aws iam update-account-password-policy --minimum-password-length 14",
+      "buildTimeRemediation": "resource \"aws_iam_account_password_policy\" \"strict\" {\n  minimum_password_length = 14\n}",
+      "rationale": "Longer passwords resist brute-force and credential-stuffing attacks."
+    },
+    {
+      "cid": "3",
+      "controlName": "Ensure S3 buckets are not publicly readable",
+      "criticality": "CRITICAL",
+      "serviceType": "S3",
+      "resourceType": "S3_BUCKET",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>Enable S3 Block Public Access at account and bucket level; remove any ACL/policy granting AllUsers/AuthenticatedUsers read.</p>",
+      "cliRemediation": "aws s3api put-public-access-block --bucket <name> --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true",
+      "buildTimeRemediation": "resource \"aws_s3_bucket_public_access_block\" \"b\" {\n  block_public_acls = true\n  ignore_public_acls = true\n  block_public_policy = true\n  restrict_public_buckets = true\n}",
+      "rationale": "Publicly readable buckets can expose sensitive data to anyone on the internet."
+    },
+    {
+      "cid": "4",
+      "controlName": "Ensure security groups do not allow 0.0.0.0/0 to port 22",
+      "criticality": "HIGH",
+      "serviceType": "EC2",
+      "resourceType": "SECURITY_GROUP",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>Edit the security group; remove the inbound rule allowing 0.0.0.0/0 to port 22 and scope it to a known CIDR or use SSM Session Manager instead.</p>",
+      "cliRemediation": "aws ec2 revoke-security-group-ingress --group-id <sg-id> --protocol tcp --port 22 --cidr 0.0.0.0/0",
+      "buildTimeRemediation": "ingress {\n  from_port = 22\n  to_port = 22\n  protocol = \"tcp\"\n  cidr_blocks = [\"10.0.0.0/8\"]  # scope to your network\n}",
+      "rationale": "Exposing SSH (22) to 0.0.0.0/0 invites brute-force and exploitation from the internet."
+    },
+    {
+      "cid": "5",
+      "controlName": "Ensure EBS volumes are encrypted",
+      "criticality": "MEDIUM",
+      "serviceType": "EC2",
+      "resourceType": "EBS_VOLUME",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>Enable EBS encryption by default in the EC2 account settings; re-create or snapshot-and-restore existing unencrypted volumes as encrypted.</p>",
+      "cliRemediation": "aws ec2 enable-ebs-encryption-by-default",
+      "buildTimeRemediation": "resource \"aws_ebs_encryption_by_default\" \"on\" {\n  enabled = true\n}",
+      "rationale": "Encrypting EBS volumes protects data at rest against physical/media exposure."
+    },
+    {
+      "cid": "6",
+      "controlName": "Ensure CloudTrail is enabled in all regions",
+      "criticality": "HIGH",
+      "serviceType": "CLOUDTRAIL",
+      "resourceType": "CLOUDTRAIL",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>Create a multi-region CloudTrail trail with log file validation enabled, delivering to an S3 bucket with access logging.</p>",
+      "cliRemediation": "aws cloudtrail create-trail --name org-trail --s3-bucket-name <bucket> --is-multi-region-trail --enable-log-file-validation",
+      "buildTimeRemediation": "resource \"aws_cloudtrail\" \"main\" {\n  name = \"org-trail\"\n  is_multi_region_trail = true\n  enable_log_file_validation = true\n}",
+      "rationale": "CloudTrail is the audit record of API activity; without it, incidents can't be investigated."
+    },
+    {
+      "cid": "7",
+      "controlName": "Ensure RDS instances are encrypted at rest",
+      "criticality": "MEDIUM",
+      "serviceType": "RDS",
+      "resourceType": "RDS_INSTANCE",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>RDS encryption can't be toggled in place \u2014 snapshot the instance, copy the snapshot with encryption enabled, and restore from the encrypted copy.</p>",
+      "cliRemediation": "aws rds copy-db-snapshot --source-db-snapshot-identifier <snap> --target-db-snapshot-identifier <snap>-enc --kms-key-id <kms-arn>",
+      "buildTimeRemediation": "resource \"aws_db_instance\" \"db\" {\n  storage_encrypted = true\n  kms_key_id = aws_kms_key.rds.arn\n}",
+      "rationale": "Encryption at rest protects database contents if the underlying storage is compromised."
+    }
+  ],
+  "count": 7
+}

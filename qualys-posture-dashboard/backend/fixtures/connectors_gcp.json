@@ -1,0 +1,26 @@
+{
+  "content": [
+    {
+      "connectorId": "conn-gcp-0",
+      "name": "gcp-connector-0",
+      "projectId": "demo-gcp-project-8821",
+      "state": "SUCCESS",
+      "provider": "GCP"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 50,
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 1,
+  "last": true,
+  "first": true,
+  "number": 0,
+  "size": 50,
+  "numberOfElements": 1,
+  "empty": false
+}

@@ -1,0 +1,40 @@
+{
+  "content": [
+    {
+      "connectorId": "conn-aws-0",
+      "name": "aws-connector-0",
+      "awsAccountId": "100000000002",
+      "state": "SUCCESS",
+      "provider": "AWS"
+    },
+    {
+      "connectorId": "conn-aws-1",
+      "name": "aws-connector-1",
+      "awsAccountId": "100000000003",
+      "state": "SUCCESS",
+      "provider": "AWS"
+    },
+    {
+      "connectorId": "conn-aws-2",
+      "name": "aws-connector-2",
+      "awsAccountId": "100000000001",
+      "state": "SUCCESS",
+      "provider": "AWS"
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 50,
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 3,
+  "last": true,
+  "first": true,
+  "number": 0,
+  "size": 50,
+  "numberOfElements": 3,
+  "empty": false
+}

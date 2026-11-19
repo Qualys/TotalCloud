@@ -1,0 +1,44 @@
+{
+  "control": [
+    {
+      "cid": "101",
+      "controlName": "Ensure storage accounts disallow public blob access",
+      "criticality": "HIGH",
+      "serviceType": "Storage",
+      "resourceType": "STORAGE_ACCOUNT",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>On each storage account set <b>Allow Blob public access</b> to Disabled (Configuration blade).</p>",
+      "cliRemediation": "az storage account update --name <acct> --resource-group <rg> --allow-blob-public-access false",
+      "buildTimeRemediation": "resource \"azurerm_storage_account\" \"sa\" {\n  allow_nested_items_to_be_public = false\n}",
+      "rationale": "Public blob access can leak container data to anonymous callers."
+    },
+    {
+      "cid": "102",
+      "controlName": "Ensure NSGs restrict RDP from the internet",
+      "criticality": "HIGH",
+      "serviceType": "Network",
+      "resourceType": "NSG",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>In the NSG, remove or restrict the inbound rule allowing the internet to 3389; use Azure Bastion or a VPN instead.</p>",
+      "cliRemediation": "az network nsg rule update --nsg-name <nsg> --resource-group <rg> --name <rule> --access Deny --destination-port-ranges 3389",
+      "buildTimeRemediation": "security_rule {\n  name = \"deny-rdp\"\n  priority = 100\n  direction = \"Inbound\"\n  access = \"Deny\"\n  protocol = \"Tcp\"\n  destination_port_range = \"3389\"\n  source_address_prefix = \"Internet\"\n}",
+      "rationale": "RDP (3389) open to the internet is a top ransomware entry vector."
+    },
+    {
+      "cid": "103",
+      "controlName": "Ensure SQL servers have auditing enabled",
+      "criticality": "MEDIUM",
+      "serviceType": "SQL",
+      "resourceType": "SQL_SERVER",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>Enable SQL Server auditing and send logs to a Log Analytics workspace or storage account.</p>",
+      "cliRemediation": "az sql server audit-policy update --resource-group <rg> --name <server> --state Enabled --storage-account <sa>",
+      "buildTimeRemediation": "resource \"azurerm_mssql_server_extended_auditing_policy\" \"a\" {\n  server_id = azurerm_mssql_server.s.id\n  storage_endpoint = azurerm_storage_account.sa.primary_blob_endpoint\n}",
+      "rationale": "Auditing provides the record needed to detect and investigate database activity."
+    }
+  ],
+  "count": 3
+}

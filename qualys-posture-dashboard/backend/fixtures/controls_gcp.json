@@ -1,0 +1,31 @@
+{
+  "control": [
+    {
+      "cid": "201",
+      "controlName": "Ensure Cloud Storage buckets are not public",
+      "criticality": "CRITICAL",
+      "serviceType": "Storage",
+      "resourceType": "GCS_BUCKET",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>Remove allUsers/allAuthenticatedUsers IAM bindings and enable Public Access Prevention on the bucket.</p>",
+      "cliRemediation": "gsutil pap set enforced gs://<bucket>\ngsutil iam ch -d allUsers gs://<bucket>",
+      "buildTimeRemediation": "resource \"google_storage_bucket\" \"b\" {\n  public_access_prevention = \"enforced\"\n}",
+      "rationale": "Public buckets expose object data to anyone (allUsers/allAuthenticatedUsers)."
+    },
+    {
+      "cid": "202",
+      "controlName": "Ensure default network is deleted",
+      "criticality": "MEDIUM",
+      "serviceType": "VPC",
+      "resourceType": "NETWORK",
+      "provider": "AWS",
+      "controlType": "System Defined",
+      "manualRemediation": "<p>Delete the default VPC network in each project and create purpose-built networks with least-privilege firewall rules.</p>",
+      "cliRemediation": "gcloud compute networks delete default --project <project>",
+      "buildTimeRemediation": "# Manage networks explicitly; do not rely on auto-created 'default'\nresource \"google_compute_network\" \"vpc\" {\n  name = \"prod-vpc\"\n  auto_create_subnetworks = false\n}",
+      "rationale": "The auto-created default network has permissive firewall rules; deleting it reduces attack surface."
+    }
+  ],
+  "count": 2
+}

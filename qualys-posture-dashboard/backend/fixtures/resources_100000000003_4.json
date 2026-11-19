@@ -1,0 +1,475 @@
+{
+  "content": [
+    {
+      "resourceId": "sg-0a1b2c3d4e",
+      "region": "us-east-1",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "platform-team"
+        },
+        {
+          "key": "Environment",
+          "value": "prod"
+        },
+        {
+          "key": "CostCenter",
+          "value": "CC-4412"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1001",
+          "tagName": "Business Unit:Payments"
+        }
+      ],
+      "connectorId": "conn-aws-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-07-19T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "PASS",
+        "sinceLastCurrentState": "2026-07-19T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sg-1122334455",
+      "region": "us-west-2",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "data-eng"
+        },
+        {
+          "key": "Environment",
+          "value": "staging"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1002",
+          "tagName": "PCI Scope"
+        },
+        {
+          "tagId": "1003",
+          "tagName": "Crown Jewel"
+        }
+      ],
+      "connectorId": "conn-aws-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-08T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": "2026-07-21T10:00:00+00:00",
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-08T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sg-9988776655",
+      "region": "eu-west-1",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [],
+      "qualysTags": [],
+      "connectorId": "conn-aws-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-07T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-07T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sg-abc0123def",
+      "region": "eastus",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "platform-team"
+        },
+        {
+          "key": "Environment",
+          "value": "prod"
+        },
+        {
+          "key": "CostCenter",
+          "value": "CC-4412"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1001",
+          "tagName": "Business Unit:Payments"
+        }
+      ],
+      "connectorId": "conn-aws-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-06T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-06T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sg-0a1b2c3d4e-4",
+      "region": "us-central1",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "data-eng"
+        },
+        {
+          "key": "Environment",
+          "value": "staging"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1002",
+          "tagName": "PCI Scope"
+        },
+        {
+          "tagId": "1003",
+          "tagName": "Crown Jewel"
+        }
+      ],
+      "connectorId": "conn-aws-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-05T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-05T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sg-1122334455-5",
+      "region": "us-east-1",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [],
+      "qualysTags": [],
+      "connectorId": "conn-aws-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-04T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-04T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sg-9988776655-6",
+      "region": "us-west-2",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "platform-team"
+        },
+        {
+          "key": "Environment",
+          "value": "prod"
+        },
+        {
+          "key": "CostCenter",
+          "value": "CC-4412"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1001",
+          "tagName": "Business Unit:Payments"
+        }
+      ],
+      "connectorId": "conn-aws-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-03T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-03T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sg-abc0123def-7",
+      "region": "eu-west-1",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "data-eng"
+        },
+        {
+          "key": "Environment",
+          "value": "staging"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1002",
+          "tagName": "PCI Scope"
+        },
+        {
+          "tagId": "1003",
+          "tagName": "Crown Jewel"
+        }
+      ],
+      "connectorId": "conn-aws-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-02T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-02T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sg-0a1b2c3d4e-8",
+      "region": "eastus",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [],
+      "qualysTags": [],
+      "connectorId": "conn-aws-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-01T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-01T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sg-0a1b2c3d4e-remediated",
+      "region": "us-east-1",
+      "accountId": "100000000003",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "SECURITY_GROUP",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "platform-team"
+        },
+        {
+          "key": "Environment",
+          "value": "prod"
+        },
+        {
+          "key": "CostCenter",
+          "value": "CC-4412"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1002",
+          "tagName": "PCI Scope"
+        },
+        {
+          "tagId": "1003",
+          "tagName": "Crown Jewel"
+        }
+      ],
+      "connectorId": "conn-aws-0",
+      "result": "PASS",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure security groups do not allow 0.0.0.0/0 to port 22"
+        },
+        {
+          "settingName": "Status",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-05-25T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": "2026-07-20T10:00:00+00:00",
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-07-20T10:00:00+00:00"
+      }
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 50,
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 10,
+  "last": true,
+  "first": true,
+  "number": 0,
+  "size": 50,
+  "numberOfElements": 10,
+  "empty": false
+}
