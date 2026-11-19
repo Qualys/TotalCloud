@@ -1,169 +1,142 @@
 # Qualys Posture Dashboard
 
-A **local, single-tenant CSPM posture dashboard** for your Qualys account. You enter your Qualys
-credentials once; it pulls your cloud-security posture across **all** your connected cloud accounts
-(AWS / Azure / GCP), keeps a rolling **30-day daily history**, and presents it in three views.
+A small, self-hosted dashboard for looking at your Qualys CSPM posture. You run it on your own
+machine, enter your Qualys credentials once, and it pulls the cloud-security posture for all of your
+connected AWS, Azure and GCP accounts. It keeps a daily history for the last 30 days and shows it in
+three views.
 
-> **Your data never leaves your machine.** The only outbound calls are from your machine to *your*
-> Qualys gateway. Everything is stored in a local SQLite file, and your Qualys password is
-> **encrypted at rest**. Nothing is sent to any third party.
+It runs entirely locally. The only outbound traffic is from your machine to your own Qualys gateway.
+Everything is kept in a local SQLite file, and the Qualys password is encrypted on disk. Nothing is
+sent anywhere else.
 
----
+## The three views
 
-## What you get
+- **Controls** — one row per CSPM control, with severity, service, the pass/fail split and
+  percentage, failing and passing resource counts, and a 30-day trend sparkline. Click a control to
+  see the resources that fail it.
+- **Resources** — one row per cloud resource, with its overall pass/fail result, top severity,
+  failing and passing control counts, and a New / Existing / Fixed / Reopened status. Expand a row to
+  see its failing and passing controls with evidence.
+- **Findings** — a flat remediation list with one row per control-and-resource pair, so you can work
+  through every failing check individually. Each finding carries the same New / Existing / Fixed /
+  Reopened status, so filtering to Fixed shows what has been remediated in the last 30 days.
 
-- **Controls view** — every CSPM control: severity, service, pass-vs-fail bar and %, failing/passing
-  resource counts, and a 30-day trend sparkline. Click any control to drill into the resources
-  failing it.
-- **Resources view** — one row per cloud resource, with its overall PASS/FAIL result, top severity,
-  failing/passing control counts, **NEW / EXISTING / FIXED / REOPENED** lifecycle status (from Qualys's
-  own `evaluationDates`), and an expandable list of its failing + passing controls with evidence.
-- **Findings view** — a flat, ungrouped remediation "plan": **one row per (control × resource)**, so
-  you can work down the list of every failing check individually. Each finding carries the same
-  **NEW / EXISTING / FIXED / REOPENED** lifecycle status, so you can filter to **Fixed** to see what
-  has been remediated in the last 30 days and measure progress for the period.
+The four statuses come from Qualys's own `evaluationDates` and work the same way as VMDR: New is
+failing and seen for the first time in the last 30 days, Existing is failing and seen before, Fixed is
+now passing with a fix date inside the last 30 days, and Reopened was fixed but is failing again. The
+fix date is included in the CSV and Excel exports.
 
-> **Finding lifecycle (same four states as VMDR).** Driven by Qualys's own `evaluationDates`:
-> **New** — failing, detected for the first time in the last 30 days · **Existing** — failing, seen
-> before · **Fixed** — remediated (now passing, with a fix date inside the last 30 days) · **Reopened**
-> — was fixed, now failing again. Pick **Status → Fixed** in the Quick Filters rail (Findings or
-> Resources) to list just the remediated items; the fix date rides along into the CSV/Excel exports.
+## Other things it does
 
-Across all views:
-
-- **Remediation guidance** — Qualys's manual remediation steps are an optional **Remediation column**
-  on every table (tick it in *Columns*), so the fix is visible inline without expanding a row, and it
-  travels into the CSV and Excel exports. Pulled from the control metadata, no extra setup.
-- A **hero band** with an overall posture score, a pass/fail compliance ring, and the 30-day trend.
-- A left **Quick Filters** rail (Cloud, Severity, Result, Status, Account, Service, Policy, Resource
-  type, Region) with live counts, plus a global search and an "**As of**" time-travel date picker.
-- **Sortable, pick-and-choose columns**, **CSV** and **Excel (.xlsx)** export, pagination
-  (50 / 100 / 200 per page). The Excel export adds a **Manual remediation** column — Qualys's manual
-  remediation steps for each control (for Resources, every failing control's steps in that one cell).
-- **Two kinds of tags, kept separate** — **Cloud tags** (the provider's own, e.g. AWS `cloudTags`,
-  shown as `key=value`) and **Qualys tags** (Qualys's own asset tags, from the resource-inventory
-  API). Each is its own optional column in the tables, its own column in both exports, and both are
-  shown in the drill-downs and matched by the global search. They come from different endpoints and
-  mean different things, so a resource may carry either, both, or neither — empty cells are normal.
-- **Light (Qualys) / dark** theme toggle, and a **Settings** gear to update your credentials, switch
-  Qualys platform, and set an **automatic refresh schedule** (daily at a time, or every N hours —
-  runs in-app, no OS cron needed).
-
----
+- Shows Qualys's manual remediation steps as an optional column on any table, and includes them in the
+  exports. They come from the control metadata, so there is nothing extra to set up.
+- A header band with an overall posture score, a pass/fail ring, and the 30-day trend.
+- A left filter rail (cloud, severity, result, status, account, service, policy, resource type,
+  region) with live counts, a global search, and an "as of" date picker for looking back over the
+  history.
+- Sortable columns you can show or hide, CSV and Excel export, and pagination (50 / 100 / 200 per
+  page).
+- Two separate kinds of tags: the cloud provider's own tags (for example AWS `cloudTags`) and
+  Qualys's asset tags. Each has its own column and its own export column, and both are searchable. They
+  come from different APIs and mean different things, so a resource may have either, both or neither.
+- Light and dark themes, and a settings panel to update credentials, switch Qualys platform, and set
+  an automatic refresh (daily at a set time, or every N hours). The schedule runs inside the app, so
+  there is no OS cron to configure.
 
 ## Requirements
 
-- **Python 3.9+** (only the standard library plus a few small packages — see `backend/requirements.txt`).
-- A **Qualys account** with **CloudView / CSPM read access** (Reader-equivalent API permissions) and
-  at least one cloud connector configured.
-- No Node.js needed to *run* it — the web UI is pre-built and committed under `frontend/dist/`.
-
----
+- Python 3.9 or newer. It uses the standard library plus a few small packages listed in
+  `backend/requirements.txt`.
+- A Qualys account with CloudView / CSPM read access and at least one cloud connector configured.
+- No Node.js is needed to run it. The web UI is pre-built and committed under `frontend/dist/`.
 
 ## Quick start
 
 ```bash
-# from the project folder — cross-platform Python launcher:
-python3 run.py                 # macOS / Linux / Windows  →  http://localhost:8770
-python3 run.py start           # run in the BACKGROUND (terminal can close)
-python3 run.py stop            # stop the background server
-python3 run.py status          # is it running?
+python3 run.py            # macOS / Linux / Windows  ->  http://localhost:8770
+python3 run.py start      # run in the background (you can close the terminal)
+python3 run.py stop       # stop the background server
+python3 run.py status     # check whether it is running
 ```
 
-`./run.sh` (macOS/Linux) and `run.bat` (Windows) are thin shortcuts that just call `run.py`.
+`./run.sh` (macOS/Linux) and `run.bat` (Windows) just call `run.py`.
 
-The launcher creates a Python virtualenv, installs the backend dependencies, and starts the app on
-**http://localhost:8770** (it opens your browser automatically in foreground mode).
+On first run the launcher creates a virtualenv, installs the backend dependencies, and starts the app
+on http://localhost:8770 (it opens the browser for you in foreground mode).
 
-Then in the browser:
+Then, in the browser:
 
-1. Pick your **Qualys platform** (e.g. *US Platform 2*), enter your **username** and **password**.
-2. Click **Connect & pull posture**. It validates the credentials, then pulls your first snapshot.
-3. Use **Refresh** any time to pull a fresh snapshot; the "As of" picker lets you look back over the
+1. Pick your Qualys platform (for example US Platform 2) and enter your username and password.
+2. Click Connect & pull posture. It checks the credentials and pulls the first snapshot.
+3. Use Refresh whenever you want a fresh snapshot. The "as of" picker lets you look back over the
    30-day history.
 
-**Just want to see the UI first?** Run it in demo mode with synthetic sample data (no Qualys account
-needed):
+To try the UI without a Qualys account, run it with sample data:
 
 ```bash
 ./run.sh --demo
 ```
 
-See **[USAGE.md](./USAGE.md)** for a full walkthrough.
-
----
+See [USAGE.md](./USAGE.md) for a fuller walkthrough.
 
 ## Where your data lives
 
 | Path | What it is |
 |------|-----------|
-| `backend/data/posture.db` | Your local SQLite snapshot history (git-ignored; delete to reset). |
-| `backend/data/secret.key` | The encryption key for your stored password (git-ignored; `0600`). |
-| `backend/data/app.log` | Rotating application log (for troubleshooting; git-ignored). |
+| `backend/data/posture.db` | Local SQLite snapshot history. Delete it to reset. |
+| `backend/data/secret.key` | Encryption key for the stored password (`0600`). |
+| `backend/data/app.log` | Rotating application log, for troubleshooting. |
 
-Both are created on first run and are excluded from version control by `.gitignore`. To fully reset,
-stop the app and delete the `backend/data/` folder.
+These are created on first run and are excluded from version control by `.gitignore`. To reset
+completely, stop the app and delete the `backend/data/` folder.
 
----
+## Upgrading
 
-## Upgrading from an earlier version
-
-Your snapshot history and stored credentials live entirely in `backend/data/` — which is **not**
-shipped in the release — so upgrading never touches them. To move to a newer build:
+Your history and stored credentials live in `backend/data/`, which is not part of the release, so
+upgrading does not touch them:
 
 ```bash
-python3 run.py stop                        # 1. stop the old version
-unzip -o qualys-posture-dashboard-share.zip  # 2. extract OVER the existing folder
-                                           #    (no backend/data/ in the zip → your DB + key are untouched)
-python3 run.py start                        # 3. start — the DB auto-migrates on launch
+python3 run.py stop                           # stop the old version
+unzip -o qualys-posture-dashboard-share.zip   # extract over the existing folder
+python3 run.py start                          # start again; the DB migrates on launch
 ```
 
-Then in the browser, click **Refresh** once. The app keeps the same `posture.db`, adds any new
-columns automatically (including the ones behind the **Fixed** status), and the Refresh repopulates
-the lifecycle data so **Status → Fixed** reflects the current 30-day window. Nothing is reset — your
-history and login carry over.
+Then click Refresh once in the browser. The app keeps the same `posture.db`, adds any new columns
+automatically, and the refresh repopulates the lifecycle data. Your history and login carry over.
 
-> `unzip -o` adds and replaces files but does not delete ones removed in a release. For a
-> guaranteed-clean swap, unzip into a fresh folder and copy your old `backend/data/` across.
-
----
+Note that `unzip -o` replaces files but does not delete ones that were removed in a release. For a
+guaranteed-clean swap, unzip into a new folder and copy your old `backend/data/` across.
 
 ## Options
 
 ```bash
-./run.sh --port 9000      # run on a different port
-./run.sh --demo           # seed synthetic sample data (no credentials required)
+./run.sh --port 9000      # use a different port
+./run.sh --demo           # sample data, no credentials needed
 ```
 
-Environment variables (optional): `QPD_PORT`, `QPD_HOST`, `QPD_DATA_DIR` (where the SQLite DB + key
-are written).
+Optional environment variables: `QPD_PORT`, `QPD_HOST`, and `QPD_DATA_DIR` (where the SQLite DB and
+key are written).
 
----
+## How it works
 
-## How it works (in one paragraph)
+The FastAPI backend authenticates to your Qualys gateway (`POST /auth` returns a JWT), lists your
+cloud connectors, and pages through the CloudView CSPM evaluation endpoints to get the current posture
+and the failing/passing resources per control. It writes one snapshot per day to SQLite (idempotent,
+pruned to 30 days) and serves both the JSON API and the pre-built React UI on a single local port. It
+reads the current evaluation state rather than a 7- or 30-day window; the 30-day history is built from
+your own daily refreshes.
 
-The backend (FastAPI) authenticates to your Qualys **gateway** (`POST /auth` → JWT), enumerates your
-cloud connectors, and walks the paged **CloudView CSPM evaluations** endpoints to fetch the current
-posture and the failing/passing resources per control. It writes a **daily snapshot** to SQLite
-(idempotent per day, pruned to 30 days) and serves both the JSON API and the pre-built React UI on a
-single local port. It reads the **current** evaluation state — not a 7/30-day window; the 30-day
-history is built from your own daily refreshes.
+## Rebuilding the UI
 
----
-
-## Rebuilding the UI (only if you change the frontend)
-
-The committed `frontend/dist/` means the app runs with **zero Node install**. If you edit the
-frontend source and want to rebuild:
+The committed `frontend/dist/` is what lets the app run without Node. If you change the frontend
+source and need to rebuild it:
 
 ```bash
 cd frontend && npm ci && npm run build
 ```
 
----
-
 ## Author
 
-**Author:** *Yash Jhunjhunwala (Lead SME, Cloud Security)*
-**Project:** Qualys Posture Dashboard
-**Last Updated:** 2025-11
+Yash Jhunjhunwala (Lead SME, Cloud Security)
+Project: Qualys Posture Dashboard
+Last updated: November 2026
