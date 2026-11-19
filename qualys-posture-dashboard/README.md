@@ -166,4 +166,4 @@ cd frontend && npm ci && npm run build
 
 **Author:** *Yash Jhunjhunwala (Lead SME, Cloud Security)*
 **Project:** Qualys Posture Dashboard
-**Last Updated:** 2025-11
+**Last Updated:** 2026-11
