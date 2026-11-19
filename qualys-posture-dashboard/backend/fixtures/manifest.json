@@ -1,0 +1,46 @@
+{
+  "accounts": [
+    {
+      "id": "100000000002",
+      "csp": "AWS"
+    },
+    {
+      "id": "100000000003",
+      "csp": "AWS"
+    },
+    {
+      "id": "100000000001",
+      "csp": "AWS"
+    },
+    {
+      "id": "a1b2c3d4-5e6f-7788-99aa-bbccddeeff00",
+      "csp": "AZURE"
+    },
+    {
+      "id": "demo-gcp-project-8821",
+      "csp": "GCP"
+    }
+  ],
+  "csps": {
+    "AWS": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7"
+    ],
+    "AZURE": [
+      "101",
+      "102",
+      "103"
+    ],
+    "GCP": [
+      "201",
+      "202"
+    ]
+  },
+  "captured_from": "a live Qualys pod (response shapes only)",
+  "note": "Synthetic values, REAL response shapes. No arn field; evaluationDates present."
+}

@@ -1,0 +1,58 @@
+{
+  "content": [
+    {
+      "controlId": "101",
+      "controlName": "Ensure storage accounts disallow public blob access",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "HIGH",
+      "service": "Storage",
+      "result": "FAIL",
+      "passedResources": 14,
+      "failedResources": 6,
+      "passWithExceptionResources": 0
+    },
+    {
+      "controlId": "102",
+      "controlName": "Ensure NSGs restrict RDP from the internet",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "HIGH",
+      "service": "Network",
+      "result": "FAIL",
+      "passedResources": 19,
+      "failedResources": 7,
+      "passWithExceptionResources": 0
+    },
+    {
+      "controlId": "103",
+      "controlName": "Ensure SQL servers have auditing enabled",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "MEDIUM",
+      "service": "SQL",
+      "result": "FAIL",
+      "passedResources": 6,
+      "failedResources": 2,
+      "passWithExceptionResources": 0
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 300,
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 3,
+  "last": true,
+  "first": true,
+  "number": 0,
+  "size": 300,
+  "numberOfElements": 3,
+  "empty": false
+}

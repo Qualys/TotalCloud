@@ -1,0 +1,340 @@
+{
+  "content": [
+    {
+      "resourceId": "stprodlogs01",
+      "region": "eastus",
+      "accountId": "a1b2c3d4-5e6f-7788-99aa-bbccddeeff00",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "STORAGE_ACCOUNT",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "platform-team"
+        },
+        {
+          "key": "Environment",
+          "value": "prod"
+        },
+        {
+          "key": "CostCenter",
+          "value": "CC-4412"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1001",
+          "tagName": "Business Unit:Payments"
+        }
+      ],
+      "connectorId": "conn-azure-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure storage accounts disallow public blob access"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-07-19T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "PASS",
+        "sinceLastCurrentState": "2026-07-19T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "stpublicassets",
+      "region": "eastus",
+      "accountId": "a1b2c3d4-5e6f-7788-99aa-bbccddeeff00",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "STORAGE_ACCOUNT",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "data-eng"
+        },
+        {
+          "key": "Environment",
+          "value": "staging"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1002",
+          "tagName": "PCI Scope"
+        },
+        {
+          "tagId": "1003",
+          "tagName": "Crown Jewel"
+        }
+      ],
+      "connectorId": "conn-azure-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure storage accounts disallow public blob access"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-08T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": "2026-07-21T10:00:00+00:00",
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-08T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sttfstate",
+      "region": "eastus",
+      "accountId": "a1b2c3d4-5e6f-7788-99aa-bbccddeeff00",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "STORAGE_ACCOUNT",
+      "cloudTags": [],
+      "qualysTags": [],
+      "connectorId": "conn-azure-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure storage accounts disallow public blob access"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-07T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-07T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "stprodlogs01-3",
+      "region": "eastus",
+      "accountId": "a1b2c3d4-5e6f-7788-99aa-bbccddeeff00",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "STORAGE_ACCOUNT",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "platform-team"
+        },
+        {
+          "key": "Environment",
+          "value": "prod"
+        },
+        {
+          "key": "CostCenter",
+          "value": "CC-4412"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1001",
+          "tagName": "Business Unit:Payments"
+        }
+      ],
+      "connectorId": "conn-azure-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure storage accounts disallow public blob access"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-06T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-06T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "stpublicassets-4",
+      "region": "eastus",
+      "accountId": "a1b2c3d4-5e6f-7788-99aa-bbccddeeff00",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "STORAGE_ACCOUNT",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "data-eng"
+        },
+        {
+          "key": "Environment",
+          "value": "staging"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1002",
+          "tagName": "PCI Scope"
+        },
+        {
+          "tagId": "1003",
+          "tagName": "Crown Jewel"
+        }
+      ],
+      "connectorId": "conn-azure-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure storage accounts disallow public blob access"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-05T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-05T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "sttfstate-5",
+      "region": "eastus",
+      "accountId": "a1b2c3d4-5e6f-7788-99aa-bbccddeeff00",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "STORAGE_ACCOUNT",
+      "cloudTags": [],
+      "qualysTags": [],
+      "connectorId": "conn-azure-0",
+      "result": "FAIL",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure storage accounts disallow public blob access"
+        },
+        {
+          "settingName": "Current Value",
+          "actualValue": "non-compliant"
+        },
+        {
+          "settingName": "Expected",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-06-04T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": null,
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-06-04T10:00:00+00:00"
+      }
+    },
+    {
+      "resourceId": "stprodlogs01-remediated",
+      "region": "eastus",
+      "accountId": "a1b2c3d4-5e6f-7788-99aa-bbccddeeff00",
+      "evaluatedOn": "2026-07-24T10:00:00+00:00",
+      "resourceType": "STORAGE_ACCOUNT",
+      "cloudTags": [
+        {
+          "key": "Owner",
+          "value": "platform-team"
+        },
+        {
+          "key": "Environment",
+          "value": "prod"
+        },
+        {
+          "key": "CostCenter",
+          "value": "CC-4412"
+        }
+      ],
+      "qualysTags": [
+        {
+          "tagId": "1002",
+          "tagName": "PCI Scope"
+        },
+        {
+          "tagId": "1003",
+          "tagName": "Crown Jewel"
+        }
+      ],
+      "connectorId": "conn-azure-0",
+      "result": "PASS",
+      "evidences": [
+        {
+          "settingName": "Control",
+          "actualValue": "Ensure storage accounts disallow public blob access"
+        },
+        {
+          "settingName": "Status",
+          "actualValue": "compliant"
+        }
+      ],
+      "evaluationDates": {
+        "firstEvaluated": "2026-05-25T10:00:00+00:00",
+        "lastEvaluated": "2026-07-24T10:00:00+00:00",
+        "dateReopen": null,
+        "dateFixed": "2026-07-20T10:00:00+00:00",
+        "prevResult": "FAIL",
+        "sinceLastCurrentState": "2026-07-20T10:00:00+00:00"
+      }
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 50,
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 7,
+  "last": true,
+  "first": true,
+  "number": 0,
+  "size": 50,
+  "numberOfElements": 7,
+  "empty": false
+}

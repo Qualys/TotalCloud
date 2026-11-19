@@ -1,0 +1,45 @@
+{
+  "content": [
+    {
+      "controlId": "201",
+      "controlName": "Ensure Cloud Storage buckets are not public",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "CRITICAL",
+      "service": "Storage",
+      "result": "FAIL",
+      "passedResources": 11,
+      "failedResources": 3,
+      "passWithExceptionResources": 0
+    },
+    {
+      "controlId": "202",
+      "controlName": "Ensure default network is deleted",
+      "policyNames": [
+        "CIS Benchmark"
+      ],
+      "criticality": "MEDIUM",
+      "service": "VPC",
+      "result": "FAIL",
+      "passedResources": 2,
+      "failedResources": 2,
+      "passWithExceptionResources": 0
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 300,
+    "offset": 0,
+    "paged": true,
+    "unpaged": false
+  },
+  "totalPages": 1,
+  "totalElements": 2,
+  "last": true,
+  "first": true,
+  "number": 0,
+  "size": 300,
+  "numberOfElements": 2,
+  "empty": false
+}
