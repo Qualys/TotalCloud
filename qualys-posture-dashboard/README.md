@@ -165,5 +165,5 @@ cd frontend && npm ci && npm run build
 ## Author
 
 **Author:** *Yash Jhunjhunwala (Lead SME, Cloud Security)*
-**Project:** Qualys TotalCloud Unified Terraform Deployment
+**Project:** Qualys Posture Dashboard
 **Last Updated:** 2025-11
